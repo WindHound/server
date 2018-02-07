@@ -1,6 +1,6 @@
 package com.windhound.server.race;
 
-public abstract class Stage extends Structured
+public abstract class Stage<S, M> extends Structured<S, M>
 {
     protected long   eventId;
     protected String name;

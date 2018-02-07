@@ -2,7 +2,7 @@ package com.windhound.server.race;
 
 import java.util.HashSet;
 
-public class Competitor extends Structured
+public class Competitor extends Structured<Boat, Competitor>
 {
     private long   userId;
     private String name;
@@ -17,13 +17,15 @@ public class Competitor extends Structured
         boats = new HashSet<>();
     }
 
+    /*
     public boolean hasBoat(Boat boat)
     {
-        return hasParent(boat);
+        return hasManager(boat);
     }
 
     public void addBoat(Boat boat)
     {
-        addParent(boat);
+        addManager(boat);
     }
+    //*/
 }

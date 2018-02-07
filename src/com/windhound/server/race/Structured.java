@@ -2,36 +2,36 @@ package com.windhound.server.race;
 
 import java.util.HashSet;
 
-public abstract class Structured
+public abstract class Structured<S, M>
 {
-    protected HashSet<Structured> children;
-    protected HashSet<Structured> parents;
+    protected HashSet<S> subordinates;
+    protected HashSet<M> managers;
 
     public Structured()
     {
-        children = new HashSet<>();
-        parents  = new HashSet<>();
+        subordinates = new HashSet<>();
+        managers     = new HashSet<>();
     }
 
-    protected boolean hasChild(Structured child)
+    public boolean hasSubordinate(S subordinate)
     {
-        return children.contains(child);
+        return subordinates.contains(subordinate);
     }
 
-    protected boolean hasParent(Structured parent)
+    public boolean hasManager(M manager)
     {
-        return parents.contains(parent);
+        return managers.contains(manager);
     }
 
-    protected void addChild(Structured child)
+    public void addSubordinate(S subordinate)
     {
-        if (!hasChild(child))
-            children.add(child);
+        if (!hasSubordinate(subordinate))
+            subordinates.add(subordinate);
     }
 
-    protected void addParent(Structured parent)
+    public void addManager(M manager)
     {
-        if (!hasParent(parent))
-            parents.add(parent);
+        if (!hasManager(manager))
+            managers.add(manager);
     }
 }
