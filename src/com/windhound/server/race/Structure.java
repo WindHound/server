@@ -1,25 +1,24 @@
 package com.windhound.server.race;
 
-import com.windhound.server.DBManager;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class Structure
 {
     protected Long   id;
-    //protected String name;
+    protected String name;
 
     protected HashSet<Long> subordinates;
     protected HashSet<Long> managers;
 
-    protected Structure(Long a_eventId)//, String a_name)
+    protected Structure(Long          a_id,
+                        String        a_name,
+                        HashSet<Long> a_subordinates,
+                        HashSet<Long> a_managers)
     {
-        id = a_eventId;
-        //name    = a_name;
-
-        subordinates = new HashSet<>();
-        managers     = new HashSet<>();
+        id           = a_id;
+        name         = a_name;
+        subordinates = a_subordinates;
+        managers     = a_managers;
     }
 
     public boolean hasSubordinate(Long id)
