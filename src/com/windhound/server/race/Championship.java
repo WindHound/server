@@ -1,20 +1,21 @@
 package com.windhound.server.race;
 
-public class Championship extends Stage<Championship, Event>
+public class Championship extends Structure
 {
-    public Championship(long a_id, String a_name)
+    private Championship(Long a_id)//, String a_name)
     {
-        super(a_id, a_name);
-    }
-    /*/
-    public boolean hasEvent(Event event)
-    {
-        return hasSubordinate(event);
+        super(a_id);//, a_name);
     }
 
-    public void addEvent(Event event)
+    public static Championship getInstance(Long a_id)//, String a_name)
     {
-        addSubordinate(event);
+        Championship championship = StructureManager.getChampionship(a_id);
+        if (championship == null)
+        {
+            championship = new Championship(a_id);//, a_name);
+            StructureManager.addChampionship(championship);
+        }
+
+        return championship;
     }
-    //*/
 }

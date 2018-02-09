@@ -1,31 +1,21 @@
 package com.windhound.server.race;
 
-public class Race extends Stage<Event, Boat>
+public class Race extends Structure
 {
-    public Race(long a_id, String a_name)
+    private Race(Long a_id)//, String a_name)
     {
-        super(a_id, a_name);
+        super(a_id);//, a_name);
     }
 
-    /*
-    public boolean hasBoat(Boat boat)
+    public static Race getInstance(Long a_id, String a_name)
     {
-        return hasSubordinate(boat);
-    }
+        Race race = StructureManager.getRace(a_id);
+        if (race == null)
+        {
+            race = new Race(a_id);//, a_name);
+            StructureManager.addRace(race);
+        }
 
-    public boolean hasEvent(Event event)
-    {
-        return hasManager(event);
+        return race;
     }
-
-    public void addBoat(Boat boat)
-    {
-        addSubordinate(boat);
-    }
-
-    public void addEvent(Event event)
-    {
-        addManager(event);
-    }
-    //*/
 }

@@ -1,44 +1,21 @@
 package com.windhound.server.race;
 
-import java.util.HashSet;
-
-public class Boat extends Structured<Race, Competitor>
+public class Boat extends Structure
 {
-    private long   boatId;
-    private String name;
-    //private RaceClass class;
-
-    private HashSet<Competitor> competitors;
-    private HashSet<Race>       races;
-
-    public Boat(long a_boatId, String a_name)
+    private Boat(Long a_id)//, String a_name)
     {
-        boatId = a_boatId;
-        name   = a_name;
-
-        competitors = new HashSet<>();
-        races       = new HashSet<>();
+        super(a_id);//, a_name);
     }
 
-    /*
-    public boolean hasCompetitor(Competitor competitor)
+    public static Boat getInstance(Long a_id)//, String a_name)
     {
-        return hasSubordinate(competitor);
-    }
+        Boat boat = StructureManager.getBoat(a_id);
+        if (boat == null)
+        {
+            boat = new Boat(a_id);//, a_name);
+            StructureManager.addBoat(boat);
+        }
 
-    public boolean hasRace(Race race)
-    {
-        return hasSubordinate(race);
+        return boat;
     }
-
-    public void addCompetitor(Competitor competitor)
-    {
-        addSubordinate(competitor);
-    }
-
-    public void addRace(Race race)
-    {
-        addManager(race);
-    }
-    */
 }
