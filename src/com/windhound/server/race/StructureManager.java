@@ -18,7 +18,9 @@ public class StructureManager
         boats         = new HashMap<>();
         competitors   = new HashMap<>();
     }
-
+    //
+    // Get
+    //
     public static Championship getChampionship(Long a_id)
     {
         return championships.get(a_id);
@@ -43,7 +45,9 @@ public class StructureManager
     {
         return competitors.get(a_id);
     }
-
+    //
+    // Add
+    //
     public static void addChampionship(Championship championship)
     {
         championships.put(championship.id, championship);
