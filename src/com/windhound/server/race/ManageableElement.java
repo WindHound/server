@@ -1,6 +1,9 @@
 package com.windhound.server.race;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class ManageableElement extends StructureElement
 {
@@ -15,6 +18,11 @@ public abstract class ManageableElement extends StructureElement
         super(a_id, a_name, a_subordinates, a_managers);
 
         admins = a_admins;
+    }
+
+    public List<Long> getAdmins()
+    {
+        return Collections.unmodifiableList(new ArrayList<>(admins));
     }
 
     public boolean hasAdmin(Long id)

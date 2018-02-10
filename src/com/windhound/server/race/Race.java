@@ -4,6 +4,9 @@ import java.util.HashSet;
 
 public class Race extends ManageableElement
 {
+    //private Date     date;
+    //private ArrayList<Courses/Classes> courses;
+
     private Race(Long          a_id,
                  String        a_name,
                  HashSet<Long> a_admins,

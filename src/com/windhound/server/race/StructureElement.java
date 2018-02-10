@@ -1,14 +1,24 @@
 package com.windhound.server.race;
 
-import java.util.HashSet;
+import java.util.*;
 
 public abstract class StructureElement
 {
-    public Long   id;
-    public String name;
+    protected Long   id;
+    protected String name;
 
     protected HashSet<Long> subordinates;
     protected HashSet<Long> managers;
+
+    public Long getID()
+    {
+        return id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
 
     protected StructureElement(Long          a_id,
                                String        a_name,
@@ -19,6 +29,16 @@ public abstract class StructureElement
         name         = a_name;
         subordinates = a_subordinates;
         managers     = a_managers;
+    }
+
+    public List<Long> getSubordinates()
+    {
+        return Collections.unmodifiableList(new ArrayList<>(subordinates));
+    }
+
+    public List<Long> getManagers()
+    {
+        return Collections.unmodifiableList(new ArrayList<>(managers));
     }
 
     public boolean hasSubordinate(Long id)

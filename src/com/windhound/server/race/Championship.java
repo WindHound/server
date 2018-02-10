@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public class Championship extends ManageableElement
 {
-    //public Date date;
+    //private Date date;
 
     private Championship(Long          a_id,
                          String        a_name,

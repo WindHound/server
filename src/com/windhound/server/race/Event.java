@@ -4,6 +4,9 @@ import java.util.HashSet;
 
 public class Event extends ManageableElement
 {
+    //private Date     date;
+    //private Location location;
+
     private Event(Long          a_id,
                   String        a_name,
                   HashSet<Long> a_admins,

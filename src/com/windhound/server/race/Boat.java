@@ -4,6 +4,8 @@ import java.util.HashSet;
 
 public class Boat extends ManageableElement
 {
+    //private BoatInfo info;
+
     private Boat(Long          a_id,
                  String        a_name,
                  HashSet<Long> a_admins,
