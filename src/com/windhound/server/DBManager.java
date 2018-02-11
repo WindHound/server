@@ -7,10 +7,26 @@ import java.util.Random;
 
 public class DBManager
 {
+    public static StructureElement loadStructureElement(Class type, Long id)
+    {
+        if (type == Championship.class)
+            return loadChampionship(id);
+        if (type == Event.class)
+            return loadEvent(id);
+        if (type == Race.class)
+            return loadRace(id);
+        if (type == Boat.class)
+            return loadBoat(id);
+        if (type == Competitor.class)
+            return loadCompetitor(id);
+
+        throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager");
+    }
+
     public static HashSet<Long> getAdmins(Long a_id)
     {
         Random        random       = new Random();
-        int           count        = 1 + random.nextInt(2);
+        int           count        = 1 + random.nextInt(1);
         HashSet<Long> subordinates = new HashSet<>();
 
         for (int i = 1; i <= count; ++i)
@@ -22,7 +38,7 @@ public class DBManager
     public static HashSet<Long> getSubordinates(Long a_id)
     {
         Random        random       = new Random();
-        int           count        = random.nextInt(5);
+        int           count        = 1 + random.nextInt(2);
         HashSet<Long> subordinates = new HashSet<>();
 
         for (int i = 1; i <= count; ++i)
@@ -34,7 +50,7 @@ public class DBManager
     public static HashSet<Long> getManagers(Long a_id)
     {
         Random        random   = new Random();
-        int           count    = random.nextInt(5);
+        int           count    = 1 + random.nextInt(2);
         HashSet<Long> managers = new HashSet<>();
 
         for (int i = 1; i <= count; ++i)

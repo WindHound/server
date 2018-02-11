@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class ManageableElement extends StructureElement
+public abstract class ManageableElement<S extends StructureElement, M extends StructureElement> extends StructureElement<S, M>
 {
     protected HashSet<Long> admins;
 

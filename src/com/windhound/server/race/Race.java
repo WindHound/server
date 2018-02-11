@@ -2,7 +2,7 @@ package com.windhound.server.race;
 
 import java.util.HashSet;
 
-public class Race extends ManageableElement
+public class Race extends ManageableElement<Boat, Event>
 {
     //private Date     date;
     //private ArrayList<Courses/Classes> courses;

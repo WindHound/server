@@ -2,7 +2,7 @@ package com.windhound.server.race;
 
 import java.util.HashSet;
 
-public class Event extends ManageableElement
+public class Event extends ManageableElement<Race, Championship>
 {
     //private Date     date;
     //private Location location;

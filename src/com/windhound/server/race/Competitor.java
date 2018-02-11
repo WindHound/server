@@ -2,13 +2,13 @@ package com.windhound.server.race;
 
 import java.util.HashSet;
 
-public class Competitor extends StructureElement
+public class Competitor extends StructureElement<Competitor,  Boat>
 {
     private Competitor(Long          a_id,
                        String        a_name,
                        HashSet<Long> a_boats)
     {
-        super(a_id, a_name, null, a_boats);
+        super(a_id, a_name, new HashSet<>(), a_boats);
     }
 
     public static Competitor createCompetitor(Long          a_id,

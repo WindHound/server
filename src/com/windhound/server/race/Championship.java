@@ -2,7 +2,7 @@ package com.windhound.server.race;
 
 import java.util.HashSet;
 
-public class Championship extends ManageableElement
+public class Championship extends ManageableElement<Event, Championship>
 {
     //private Date date;
 
@@ -11,7 +11,7 @@ public class Championship extends ManageableElement
                          HashSet<Long> a_admins,
                          HashSet<Long> a_events)
     {
-        super(a_id, a_name, a_admins, a_events, null);
+        super(a_id, a_name, a_admins, a_events, new HashSet<>());
     }
 
     public static Championship createChampionship(Long          a_id,
