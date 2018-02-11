@@ -1,5 +1,6 @@
 package com.windhound.server;
 
+import com.windhound.db.Database;
 import com.windhound.server.race.*;
 
 import java.util.HashSet;
@@ -43,6 +44,9 @@ public class Main
         championship.loadStructureElement();
         StructureManager.addBoat(null);
         */
+
+        Database.getBoat(1);
+
     }
 
     public static void Close()

@@ -31,4 +31,6 @@ public class Boat extends ManageableElement<Competitor, Race>
 
         return boat;
     }
+
+
 }
