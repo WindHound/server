@@ -1,7 +1,6 @@
 package com.windhound.server.database;
 
-import com.windhound.server.race.Boat;
-import com.windhound.server.race.Competitor;
+import com.windhound.server.race.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,8 +11,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Vector;
 
-import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
-
 public class DBManager
 {
     private static String hostname;
@@ -22,27 +19,30 @@ public class DBManager
     private static String password;
     private static String port;
 
-    static {
+    static
+    {
         Properties prop = new Properties();
-        try {
-            InputStream inputStream = DBManager.class.getClassLoader().getResourceAsStream("config.properties");
+        try
+        {
+            InputStream inputStream = DBManager.class.getClassLoader().
+                    getResourceAsStream("config.properties");
 
             prop.load(inputStream);
 
             hostname = prop.getProperty("hostname");
-            port = prop.getProperty("port");
-            sid = prop.getProperty("sid");
-            user = prop.getProperty("user");
+            port     = prop.getProperty("port");
+            sid      = prop.getProperty("sid");
+            user     = prop.getProperty("user");
             password = prop.getProperty("password");
-
-            System.out.println("done");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    public static Connection getConnection()
+    public static Connection getNewConnection()
     {
         Connection connection = null;
         try
@@ -59,22 +59,31 @@ public class DBManager
         return connection;
     }
 
-    private static JTable query(Connection connection, String query) {
-
+    private static JTable executeQuery(Connection connection, String queryString)
+    {
         ResultSet rs = null;
         JTable table = null;
 
-        try{
+        try
+        {
             Statement stmt = connection.createStatement();
-            rs = stmt.executeQuery(query);
+            rs = stmt.executeQuery(queryString);
 
-        }catch(Exception e){ System.out.println(e);}
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            System.exit(1);
+        }
 
-
-        try {
+        try
+        {
             table = new JTable(buildTableModel(rs));
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             e.printStackTrace();
+            System.exit(1);
         }
 
         return table;
@@ -110,14 +119,38 @@ public class DBManager
 
         return table.getValueAt(rowId, columnId);
     }
+    //
+    // Get StructureElement objects
+    //
+    public static StructureElement loadStructureElement(Class type, Long id)
+    {
+        Connection connection = getNewConnection();
+        return loadStructureElement(connection, type, id);
+    }
 
-    public static Boat getBoatByID(Connection connection, Long boatID) {
-        JTable table = query(connection, "select * from boat where boat_id=" + boatID);
+    public static StructureElement loadStructureElement(Connection connection, Class type, Long id)
+    {
+        /*if (type == Championship.class)
+            return loadChampionshipByID(connection, id);
+        if (type == Event.class)
+            return loadEventByID(connection, id);
+        if (type == Race.class)
+            return loadRaceByID(connection, id);*/
+        if (type == Boat.class)
+            return loadBoatByID(connection, id);
+        if (type == Competitor.class)
+            return loadCompetitorByID(connection, id);
 
-        Long   id   = new Long(((BigDecimal)getValueAt(table, 0, "BOAT_ID")).longValue());
+        throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager");
+    }
+
+    public static Boat loadBoatByID(Connection connection, Long boatID) {
+        JTable table = executeQuery(connection, queryBoatByID + boatID);
+
+        Long   id   = ((BigDecimal)getValueAt(table, 0, "BOAT_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
 
-        HashSet<Long> competitors = getCompetitorsByBoatID(connection, boatID);
+        HashSet<Long> competitors = loadCompetitorsByBoatID(connection, boatID);
 
         Boat boat = Boat.createBoat(
                 id,
@@ -130,13 +163,13 @@ public class DBManager
         return boat;
     }
 
-    public static Competitor getUserByID(Connection connection, Long competitorID) {
-        JTable table = query(connection, "select * from user where user_id=" + competitorID);
+    public static Competitor loadCompetitorByID(Connection connection, Long competitorID) {
+        JTable table = executeQuery(connection, queryCompetitorByID + competitorID);
 
-        Long   id   = new Long(((BigDecimal)getValueAt(table, 0, "USER_ID")).longValue());
+        Long   id   = ((BigDecimal)getValueAt(table, 0, "USER_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
 
-        HashSet<Long> boats = getBoatsByCompetitorID(connection, competitorID);
+        HashSet<Long> boats = loadBoatsByCompetitorID(connection, competitorID);
 
         Competitor competitor = Competitor.createCompetitor(
                 id,
@@ -146,34 +179,48 @@ public class DBManager
 
         return competitor;
     }
-
-    public static HashSet<Long> getCompetitorsByBoatID(Connection connection, Long boatID)
+    //
+    // Get StructureElement relations
+    //
+    public static HashSet<Long> loadBoatsByCompetitorID(Connection connection, Long competitorID)
     {
-        JTable table = query(connection, "select * from REL_BOAT_USER where boat_id=" + boatID);
-
-        HashSet<Long> competitors = new HashSet<>();
-
-        for (int i = 0; i < table.getRowCount(); ++i)
-        {
-            Long id = new Long(((BigDecimal)getValueAt(table, i, "USER_ID")).longValue());
-            competitors.add(id);
-        }
-
-        return competitors;
-    }
-
-    public static HashSet<Long> getBoatsByCompetitorID(Connection connection, Long competitorID)
-    {
-        JTable table = query(connection, "select * from REL_BOAT_USER where user_id=" + competitorID);
+        JTable table = executeQuery(connection, queryRelationBoatsByCompetitor + competitorID);
 
         HashSet<Long> boats = new HashSet<>();
 
         for (int i = 0; i < table.getRowCount(); ++i)
         {
-            Long id = new Long(((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue());
+            Long id = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
             boats.add(id);
         }
 
         return boats;
     }
+
+    public static HashSet<Long> loadCompetitorsByBoatID(Connection connection, Long boatID)
+    {
+        JTable table = executeQuery(connection, queryRelationCompetitorsByBoat + boatID);
+
+        HashSet<Long> competitors = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "USER_ID")).longValue();
+            competitors.add(id);
+        }
+
+        return competitors;
+    }
+    //
+    // Query strings
+    //
+    private static String queryBoatByID =
+            "select * from BOAT where BOAT_ID=";
+    private static String queryCompetitorByID =
+            "select * from USER where user_id=";
+
+    private static String queryRelationBoatsByCompetitor =
+            "select * from REL_BOAT_USER where user_id=";
+    private static String queryRelationCompetitorsByBoat =
+            "select * from REL_BOAT_USER where boat_id=";
 }
