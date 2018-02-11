@@ -1,18 +1,22 @@
 package com.windhound.db;
 
 import com.windhound.server.race.Boat;
+import com.windhound.server.race.Competitor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.xml.crypto.Data;
 import java.io.*;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Vector;
 
 import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
+import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getSystemProperty;
 
 public class Database {
     private static String hostname;
@@ -41,17 +45,30 @@ public class Database {
         }
     }
 
-    private static JTable query(String query) {
+    public static Connection getConnection()
+    {
+        Connection connection = null;
+        try
+        {
+            connection = DriverManager.getConnection(
+                    "jdbc:oracle:thin:@"+ hostname + ":" + port +":"+ sid ,user ,password);
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return connection;
+    }
+
+    private static JTable query(Connection connection, String query) {
 
         ResultSet rs = null;
-        Connection con;
         JTable table = null;
 
         try{
-            con = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@"+ hostname + ":" + port +":"+ sid ,user ,password);
-
-            Statement stmt = con.createStatement();
+            Statement stmt = connection.createStatement();
             rs = stmt.executeQuery(query);
 
         }catch(Exception e){ System.out.println(e);}
@@ -78,19 +95,88 @@ public class Database {
         Vector<Vector<Object>> data = new Vector<>();
         while (rs.next()) {
             Vector<Object> row = new Vector<>();
-            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++)
                 row.add(rs.getObject(columnIndex));
-            }
+            data.add(row);
         }
         
         return new DefaultTableModel(data, columnNames);
-    } 
+    }
 
-    public static Boat getBoat(int boatID) {
-        JTable table = query("select * from boat where boat_id=" + boatID);
-        
-        TableModel model = table.getModel();
+    private static Object getValueAt(JTable table, int rowId, String columnName)
+    {
+        int columnId = -1;
 
-        return null;
+        for (int i = 0; i < table.getColumnCount(); ++i)
+            if (table.getColumnName(i).equals(columnName))
+                columnId = i;
+
+        return table.getValueAt(rowId, columnId);
+    }
+
+    public static Boat getBoatByID(Connection connection, Long boatID) {
+        JTable table = query(connection, "select * from boat where boat_id=" + boatID);
+
+        Long   id   = new Long(((BigDecimal)getValueAt(table, 0, "BOAT_ID")).longValue());
+        String name = (String)getValueAt(table, 0, "NAME");
+
+        HashSet<Long> competitors = getCompetitorsByBoatID(connection, boatID);
+
+        Boat boat = Boat.createBoat(
+                id,
+                name,
+                new HashSet<>(),
+                competitors,
+                new HashSet<>()
+        );
+
+        return boat;
+    }
+
+    public static Competitor getUserByID(Connection connection, Long competitorID) {
+        JTable table = query(connection, "select * from user where user_id=" + competitorID);
+
+        Long   id   = new Long(((BigDecimal)getValueAt(table, 0, "USER_ID")).longValue());
+        String name = (String)getValueAt(table, 0, "NAME");
+
+        HashSet<Long> boats = getBoatsByCompetitorID(connection, competitorID);
+
+        Competitor competitor = Competitor.createCompetitor(
+                id,
+                name,
+                boats
+        );
+
+        return competitor;
+    }
+
+    public static HashSet<Long> getCompetitorsByBoatID(Connection connection, Long boatID)
+    {
+        JTable table = query(connection, "select * from REL_BOAT_USER where boat_id=" + boatID);
+
+        HashSet<Long> competitors = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = new Long(((BigDecimal)getValueAt(table, i, "USER_ID")).longValue());
+            competitors.add(id);
+        }
+
+        return competitors;
+    }
+
+    public static HashSet<Long> getBoatsByCompetitorID(Connection connection, Long competitorID)
+    {
+        JTable table = query(connection, "select * from REL_BOAT_USER where user_id=" + competitorID);
+
+        HashSet<Long> boats = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = new Long(((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue());
+            boats.add(id);
+        }
+
+        return boats;
     }
 }

@@ -3,6 +3,7 @@ package com.windhound.server;
 import com.windhound.db.Database;
 import com.windhound.server.race.*;
 
+import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import javax.xml.crypto.Data;
 
 @SpringBootApplication
 public class Main
@@ -45,8 +47,9 @@ public class Main
         StructureManager.addBoat(null);
         */
 
-        Database.getBoat(1);
-
+        Connection connection = Database.getConnection();
+        Boat boat = Database.getBoatByID(connection, new Long(1));
+        //boat.loadStructure();
     }
 
     public static void Close()
