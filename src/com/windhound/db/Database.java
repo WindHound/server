@@ -5,9 +5,8 @@ import com.windhound.server.race.Boat;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.crypto.Data;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -16,27 +15,31 @@ import java.util.Vector;
 import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
 
 public class Database {
-
-    private static String hostname, sid, user, password, port;
-
+    private static String hostname;
+    private static String sid;
+    private static String user;
+    private static String password;
+    private static String port;
 
     static {
         Properties prop = new Properties();
-        InputStream input = getResourceAsStream("config.properties");
-
         try {
-            prop.load(input);
+            InputStream inputStream = Database.class.getClassLoader().getResourceAsStream("config.properties");
+
+            prop.load(inputStream);
+
+            hostname = prop.getProperty("hostname");
+            port = prop.getProperty("port");
+            sid = prop.getProperty("sid");
+            user = prop.getProperty("user");
+            password = prop.getProperty("password");
+
+            System.out.println("done");
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
-        
-        hostname = prop.getProperty("hostname");
-        port = prop.getProperty("port");
-        sid = prop.getProperty("sid");
-        user = prop.getProperty("user");
-        password = prop.getProperty("password");
     }
-
 
     private static JTable query(String query) {
 
@@ -83,8 +86,6 @@ public class Database {
         return new DefaultTableModel(data, columnNames);
     } 
 
-
-
     public static Boat getBoat(int boatID) {
         JTable table = query("select * from boat where boat_id=" + boatID);
         
@@ -92,8 +93,4 @@ public class Database {
 
         return null;
     }
-
-
 }
-
-
