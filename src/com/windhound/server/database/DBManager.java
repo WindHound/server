@@ -217,7 +217,7 @@ public class DBManager
     private static String queryBoatByID =
             "select * from BOAT where BOAT_ID=";
     private static String queryCompetitorByID =
-            "select * from USER where user_id=";
+            "select * from USERS where user_id=";
 
     private static String queryRelationBoatsByCompetitor =
             "select * from REL_BOAT_USER where user_id=";
