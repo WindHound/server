@@ -5,7 +5,7 @@ import com.windhound.server.race.*;
 import java.util.HashSet;
 import java.util.Random;
 
-public class DBManager
+public class DBManagerOLD
 {
     public static StructureElement loadStructureElement(Class type, Long id)
     {

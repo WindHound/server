@@ -1,24 +1,21 @@
-package com.windhound.db;
+package com.windhound.server.database;
 
 import com.windhound.server.race.Boat;
 import com.windhound.server.race.Competitor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Vector;
 
 import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getResourceAsStream;
-import static com.sun.org.apache.xerces.internal.utils.SecuritySupport.getSystemProperty;
 
-public class Database {
+public class DBManager
+{
     private static String hostname;
     private static String sid;
     private static String user;
@@ -28,7 +25,7 @@ public class Database {
     static {
         Properties prop = new Properties();
         try {
-            InputStream inputStream = Database.class.getClassLoader().getResourceAsStream("config.properties");
+            InputStream inputStream = DBManager.class.getClassLoader().getResourceAsStream("config.properties");
 
             prop.load(inputStream);
 

@@ -1,9 +1,6 @@
 package com.windhound.server.race;
 
-import com.windhound.server.DBManager;
-
 import java.util.HashMap;
-import java.util.List;
 
 public class StructureManager
 {
