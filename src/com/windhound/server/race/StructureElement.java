@@ -3,6 +3,7 @@ package com.windhound.server.race;
 import java.util.*;
 
 import com.windhound.server.DBManager;
+
 import org.springframework.core.GenericTypeResolver;
 
 public abstract class StructureElement<S extends StructureElement, M extends StructureElement>
