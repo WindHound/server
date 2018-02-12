@@ -1,7 +1,8 @@
 package com.windhound.server.race;
 
+import com.windhound.server.DBManager;
+
 import java.util.HashMap;
-import java.util.List;
 
 public class StructureManager
 {
@@ -20,35 +21,33 @@ public class StructureManager
         competitors   = new HashMap<>();
     }
     //
-    // Get specific
+    // Get
     //
-    public static Championship getChampionship(Long a_id)
+    public static Championship getChampionship(Long id)
     {
-        return championships.get(a_id);
+        return championships.get(id);
     }
 
-    public static Event getEvent(Long a_id)
+    public static Event getEvent(Long id)
     {
-        return events.get(a_id);
+        return events.get(id);
     }
 
-    public static Race getRace(Long a_id)
+    public static Race getRace(Long id)
     {
-        return races.get(a_id);
+        return races.get(id);
     }
 
-    public static Boat getBoat(Long a_id)
+    public static Boat getBoat(Long id)
     {
-        return boats.get(a_id);
+        return boats.get(id);
     }
 
-    public static Competitor getCompetitor(Long a_id)
+    public static Competitor getCompetitor(Long id)
     {
-        return competitors.get(a_id);
+        return competitors.get(id);
     }
-    //
-    // Get structure
-    //
+
     public static StructureElement getStructure(Class type, Long id)
     {
         if (type == Championship.class)
@@ -61,6 +60,79 @@ public class StructureManager
             return getBoat(id);
         if (type == Competitor.class)
             return getCompetitor(id);
+
+        throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager");
+    }
+    //
+    // Get or load
+    //
+    public static Championship getOrLoadChampionship(Long id)
+    {
+        Championship championship = championships.get(id);
+        if (championship != null)
+            return championship;
+
+        championship = DBManager.loadChampionship(id);
+
+        return championship;
+    }
+
+    public static Event getOrLoadEvent(Long id)
+    {
+        Event event = events.get(id);
+        if (event != null)
+            return event;
+
+        event = DBManager.loadEvent(id);
+
+        return event;
+    }
+
+    public static Race getOrLoadRace(Long id)
+    {
+        Race race = races.get(id);
+        if (race != null)
+            return race;
+
+        race = DBManager.loadRace(id);
+
+        return race;
+    }
+
+    public static Boat getOrLoadBoat(Long id)
+    {
+        Boat boat = boats.get(id);
+        if (boat != null)
+            return boat;
+
+        boat = DBManager.loadBoat(id);
+
+        return boat;
+    }
+
+    public static Competitor getOrLoadCompetitor(Long id)
+    {
+        Competitor competitor = competitors.get(id);
+        if (competitor != null)
+            return competitor;
+
+        competitor = DBManager.loadCompetitor(id);
+
+        return competitor;
+    }
+
+    public static StructureElement getOrLoadStructure(Class type, Long id)
+    {
+        if (type == Championship.class)
+            return getOrLoadChampionship(id);
+        if (type == Event.class)
+            return getOrLoadEvent(id);
+        if (type == Race.class)
+            return getOrLoadRace(id);
+        if (type == Boat.class)
+            return getOrLoadBoat(id);
+        if (type == Competitor.class)
+            return getOrLoadCompetitor(id);
 
         throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager");
     }
