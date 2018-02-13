@@ -37,6 +37,8 @@ public class Main
         app.setDefaultProperties(myProps);
 
         appContext = app.run(args);
+        Connection connection = DBManager.getNewConnection();
+
 
         /*
         Championship championship = DBManagerOLD.loadChampionship(new Long(1));
@@ -44,14 +46,18 @@ public class Main
         StructureManager.addBoat(null);
         */
 
-        /*Connection connection = DBManager.getNewConnection();
-        Competitor competitor = DBManager.loadCompetitorByID(connection, (long)5);
+        /*Competitor competitor = DBManager.loadCompetitorByID(connection, (long)5);
         Boat boat = DBManager.loadBoatByID(connection, (long)1);
         boat.loadStructure();*/
 
-        Connection connection = DBManager.getNewConnection();
-        Race race = DBManager.loadRaceByID(connection, (long)10);
-        System.out.println(race.getName());
+//        Race race = DBManager.loadRaceByID(connection, (long)10);
+//        System.out.println(race.getName());
+
+//        Event event = DBManager.loadEventByID(connection, (long)1);
+//        System.out.println(event.getName());
+
+        Championship championship = DBManager.loadChampionshipByID(connection, (long)1);
+        System.out.println(championship.getName());
     }
 
     public static void Close()
