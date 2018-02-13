@@ -133,9 +133,9 @@ public class DBManager
         /*if (type == Championship.class)
             return loadChampionshipByID(connection, id);
         if (type == Event.class)
-            return loadEventByID(connection, id);
+            return loadEventByID(connection, id);*/
         if (type == Race.class)
-            return loadRaceByID(connection, id);*/
+            return loadRaceByID(connection, id);
         if (type == Boat.class)
             return loadBoatByID(connection, id);
         if (type == Competitor.class)
@@ -179,6 +179,32 @@ public class DBManager
 
         return competitor;
     }
+
+    public static Race loadRaceByID(Connection connection, Long raceID) {
+        JTable table = executeQuery(connection, queryRaceByID + raceID);
+
+        Long   id   = ((BigDecimal)getValueAt(table, 0, "RACE_ID")).longValue();
+        String name = (String)getValueAt(table, 0, "NAME");
+
+        HashSet<Long> boats = loadBoatsByRaceID(connection, raceID);
+        HashSet<Long> events = loadEventsByRaceID(connection, raceID);
+
+        //TODO implement race admins
+        HashSet<Long> admins = new HashSet<>();
+
+        Race race = Race.createRace(
+                id,
+                name,
+                admins,
+                boats,
+                events
+        );
+
+        return race;
+
+    }
+
+
     //
     // Get StructureElement relations
     //
@@ -211,16 +237,52 @@ public class DBManager
 
         return competitors;
     }
+
+    private static HashSet<Long> loadBoatsByRaceID(Connection connection, Long raceID) {
+        JTable table = executeQuery(connection, queryRelationBoatsByRace + raceID);
+
+        HashSet<Long> boats = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
+            boats.add(id);
+        }
+
+        return boats;
+    }
+
+    private static HashSet<Long> loadEventsByRaceID(Connection connection, Long raceID) {
+        JTable table = executeQuery(connection, queryRelationEventsByRace + raceID);
+
+        HashSet<Long> events = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "EVENT_ID")).longValue();
+            events.add(id);
+        }
+
+        return events;
+    }
+
+
     //
     // Query strings
     //
     private static String queryBoatByID =
             "select * from BOAT where BOAT_ID=";
     private static String queryCompetitorByID =
-            "select * from USERS where user_id=";
+            "select * from USERS where USER_ID=";
+    private static String queryRaceByID =
+            "select * from RACE where RACE_ID=";
 
     private static String queryRelationBoatsByCompetitor =
-            "select * from REL_BOAT_USER where user_id=";
+            "select * from REL_BOAT_USER where USER_ID=";
     private static String queryRelationCompetitorsByBoat =
-            "select * from REL_BOAT_USER where boat_id=";
+            "select * from REL_BOAT_USER where USER_ID=";
+    private static String queryRelationBoatsByRace =
+            "select * from REL_RACE_BOAT where RACE_ID=";
+    private static String queryRelationEventsByRace =
+            "select * from REL_EVENT_RACE WHERE RACE_ID=";
 }

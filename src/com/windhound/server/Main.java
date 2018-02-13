@@ -44,10 +44,14 @@ public class Main
         StructureManager.addBoat(null);
         */
 
-        Connection connection = DBManager.getNewConnection();
+        /*Connection connection = DBManager.getNewConnection();
         Competitor competitor = DBManager.loadCompetitorByID(connection, (long)5);
         Boat boat = DBManager.loadBoatByID(connection, (long)1);
-        boat.loadStructure();
+        boat.loadStructure();*/
+
+        Connection connection = DBManager.getNewConnection();
+        Race race = DBManager.loadRaceByID(connection, (long)10);
+        System.out.println(race.getName());
     }
 
     public static void Close()
