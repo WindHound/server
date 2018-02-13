@@ -2,6 +2,7 @@ package com.windhound.server;
 
 import com.windhound.server.race.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -114,5 +115,55 @@ public class DBManager
         Competitor    competitor = Competitor.createCompetitor(id, name, boats);
 
         return competitor;
+    }
+    //
+    // Get all IDs
+    //
+    public static Long[] getAllChampionships()
+    {
+        Random          random        = new Random();
+        int             count         = random.nextInt(5);
+        ArrayList<Long> championships = new ArrayList<>();
+
+        for (int i = 1; i <= count; ++i)
+            championships.add(new Long(i));
+
+        return championships.toArray(new Long[championships.size()]);
+    }
+
+    public static Long[] getAllEvents()
+    {
+        Random          random        = new Random();
+        int             count         = random.nextInt(5);
+        ArrayList<Long> events = new ArrayList<>();
+
+        for (int i = 1; i <= count; ++i)
+            events.add(new Long(i));
+
+        return events.toArray(new Long[events.size()]);
+    }
+
+    public static Long[] getAllRaces()
+    {
+        Random          random        = new Random();
+        int             count         = random.nextInt(5);
+        ArrayList<Long> races = new ArrayList<>();
+
+        for (int i = 1; i <= count; ++i)
+            races.add(new Long(i));
+
+        return races.toArray(new Long[races.size()]);
+    }
+
+    public static Long[] getAllBoats()
+    {
+        Random          random        = new Random();
+        int             count         = random.nextInt(5);
+        ArrayList<Long> boats = new ArrayList<>();
+
+        for (int i = 1; i <= count; ++i)
+            boats.add(new Long(i));
+
+        return boats.toArray(new Long[boats.size()]);
     }
 }
