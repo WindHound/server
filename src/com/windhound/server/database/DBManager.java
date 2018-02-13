@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Vector;
 
 public class DBManager
@@ -59,8 +60,7 @@ public class DBManager
         return connection;
     }
 
-    private static JTable executeQuery(Connection connection, String queryString)
-    {
+    private static JTable executeQuery(Connection connection, String queryString) {
         ResultSet rs = null;
         JTable table = null;
 
@@ -109,8 +109,7 @@ public class DBManager
         return new DefaultTableModel(data, columnNames);
     }
 
-    private static Object getValueAt(JTable table, int rowId, String columnName)
-    {
+    private static Object getValueAt(JTable table, int rowId, String columnName) {
         int columnId = -1;
 
         for (int i = 0; i < table.getColumnCount(); ++i)
@@ -119,17 +118,28 @@ public class DBManager
 
         return table.getValueAt(rowId, columnId);
     }
+
+    public static HashSet<Long> getAdmins(Long a_id) {
+        Random random        = new Random();
+        int           count  = 1 + random.nextInt(1);
+        HashSet<Long> admins = new HashSet<>();
+
+        for (int i = 1; i <= count; ++i)
+            admins.add(new Long(i));
+
+        return admins;
+    }
+
+
     //
     // Get StructureElement objects
     //
-    public static StructureElement loadStructureElement(Class type, Long id)
-    {
+    public static StructureElement loadStructureElement(Class type, Long id) {
         Connection connection = getNewConnection();
         return loadStructureElement(connection, type, id);
     }
 
-    public static StructureElement loadStructureElement(Connection connection, Class type, Long id)
-    {
+    public static StructureElement loadStructureElement(Connection connection, Class type, Long id) {
         if (type == Championship.class)
             return loadChampionshipByID(connection, id);
         if (type == Event.class)
@@ -188,9 +198,7 @@ public class DBManager
 
         HashSet<Long> boats = loadBoatsByRaceID(connection, raceID);
         HashSet<Long> events = loadEventsByRaceID(connection, raceID);
-
-        //TODO implement race admins
-        HashSet<Long> admins = new HashSet<>();
+        HashSet<Long> admins = getAdmins((long)2);
 
         Race race = Race.createRace(
                 id,
@@ -212,9 +220,7 @@ public class DBManager
 
         HashSet<Long> races = loadRacesByEventID(connection, eventID);
         HashSet<Long> championships = loadChampionshipsByEventID(connection, eventID);
-
-        //TODO implement event admins
-        HashSet<Long> admins = new HashSet<>();
+        HashSet<Long> admins = getAdmins((long)2);
 
         Event event = Event.createEvent(
                 id,
@@ -234,9 +240,7 @@ public class DBManager
         String name = (String)getValueAt(table, 0, "NAME");
 
         HashSet<Long> events = loadEventsByChampionshipID(connection, championshipID);
-
-        //TODO implement event admins
-        HashSet<Long> admins = new HashSet<>();
+        HashSet<Long> admins = getAdmins((long)2);
 
         Championship championship = Championship.createChampionship(
                 id,
