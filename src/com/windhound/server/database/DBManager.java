@@ -7,10 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Vector;
+import java.util.*;
 
 public class DBManager
 {
@@ -43,8 +40,7 @@ public class DBManager
         }
     }
 
-    public static Connection getNewConnection()
-    {
+    public static Connection getNewConnection() {
         Connection connection = null;
         try
         {
@@ -130,6 +126,51 @@ public class DBManager
         return admins;
     }
 
+
+    //
+    // Get all stage IDs
+    //
+    public static Long[] getAllChampionships(Connection connection) {
+        JTable table = executeQuery(connection, queryAllChampionships);
+
+        ArrayList<Long> championships = new ArrayList<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "CHAMPIONSHIP_ID")).longValue();
+            championships.add(id);
+        }
+
+        return championships.toArray(new Long[championships.size()]);
+    }
+
+    public static Long[] getAllEvents(Connection connection) {
+        JTable table = executeQuery(connection, queryAllEvents);
+
+        ArrayList<Long> events = new ArrayList<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "EVENT_ID")).longValue();
+            events.add(id);
+        }
+
+        return events.toArray(new Long[events.size()]);
+    }
+
+    public static Long[] getAllRaces(Connection connection) {
+        JTable table = executeQuery(connection, queryAllRaces);
+
+        ArrayList<Long> races = new ArrayList<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "RACE_ID")).longValue();
+            races.add(id);
+        }
+
+        return races.toArray(new Long[races.size()]);
+    }
 
     //
     // Get StructureElement objects
@@ -358,6 +399,13 @@ public class DBManager
     //
     // Query strings
     //
+    private static String queryAllChampionships =
+            "select (CHAMPIONSHIP_ID) from CHAMPIONSHIP";
+    private static String queryAllEvents =
+            "select (EVENT_ID) from EVENT";
+    private static String queryAllRaces =
+            "select (RACE_ID) from RACE";
+
     private static String queryBoatByID =
             "select * from BOAT where BOAT_ID=";
     private static String queryCompetitorByID =
