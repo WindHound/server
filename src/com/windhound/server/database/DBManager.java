@@ -115,13 +115,18 @@ public class DBManager
         return table.getValueAt(rowId, columnId);
     }
 
-    public static HashSet<Long> getAdmins(Long a_id) {
-        Random random        = new Random();
-        int           count  = 1 + random.nextInt(1);
+    public static HashSet<Long> getAdminsByEventTypeAndID(Connection connection, String stageType, Long stageID) {
+        JTable table = executeQuery(connection, queryAdminsByStageType + "'" + stageType + "'"
+                + " AND STAGE_ID=" + stageID);
+
+
         HashSet<Long> admins = new HashSet<>();
 
-        for (int i = 1; i <= count; ++i)
-            admins.add(new Long(i));
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "USER_ID")).longValue();
+            admins.add(id);
+        }
 
         return admins;
     }
@@ -239,7 +244,7 @@ public class DBManager
 
         HashSet<Long> boats = loadBoatsByRaceID(connection, raceID);
         HashSet<Long> events = loadEventsByRaceID(connection, raceID);
-        HashSet<Long> admins = getAdmins((long)2);
+        HashSet<Long> admins = getAdminsByEventTypeAndID(connection, "Race", raceID);
 
         Race race = Race.createRace(
                 id,
@@ -261,7 +266,7 @@ public class DBManager
 
         HashSet<Long> races = loadRacesByEventID(connection, eventID);
         HashSet<Long> championships = loadChampionshipsByEventID(connection, eventID);
-        HashSet<Long> admins = getAdmins((long)2);
+        HashSet<Long> admins = getAdminsByEventTypeAndID(connection, "Event", eventID);
 
         Event event = Event.createEvent(
                 id,
@@ -281,7 +286,7 @@ public class DBManager
         String name = (String)getValueAt(table, 0, "NAME");
 
         HashSet<Long> events = loadEventsByChampionshipID(connection, championshipID);
-        HashSet<Long> admins = getAdmins((long)2);
+        HashSet<Long> admins = getAdminsByEventTypeAndID(connection, "Championship", championshipID);
 
         Championship championship = Championship.createChampionship(
                 id,
@@ -416,6 +421,8 @@ public class DBManager
             "select * from EVENT where EVENT_ID=";
     private static String queryChampionshipByID =
             "select * from CHAMPIONSHIP where CHAMPIONSHIP_ID=";
+    private static String queryAdminsByStageType =
+            "select * from ADMINS where STAGE_TYPE=";
 
 
     private static String queryRelationBoatsByCompetitor =

@@ -56,10 +56,12 @@ public class Main
 //        Event event = DBManager.loadEventByID(connection, (long)1);
 //        System.out.println(event.getName());
 
-//        Championship championship = DBManager.loadChampionshipByID(connection, (long)1);
-//        System.out.println(championship.getName());
+        Championship championship = DBManager.loadChampionshipByID(connection, (long)1);
+        System.out.println(championship.getSubordinates());
 
-        System.out.println(DBManager.getAllRaces(connection).length);
+//        System.out.println(DBManager.getAllRaces(connection).length);
+
+
     }
 
     public static void Close()
