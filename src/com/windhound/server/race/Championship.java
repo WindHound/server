@@ -6,10 +6,10 @@ public class Championship extends ManageableElement<Event, Championship>
 {
     //private Date date;
 
-    private Championship(Long          a_id,
-                         String        a_name,
-                         HashSet<Long> a_admins,
-                         HashSet<Long> a_events)
+    public Championship(Long          a_id,
+                        String        a_name,
+                        HashSet<Long> a_admins,
+                        HashSet<Long> a_events)
     {
         super(a_id, a_name, a_admins, a_events, new HashSet<>());
     }
@@ -23,7 +23,7 @@ public class Championship extends ManageableElement<Event, Championship>
         if (championship == null)
         {
             championship = new Championship(a_id, a_name, a_admins, a_events);
-            StructureManager.addChampionship(championship);
+            StructureManager.saveOrUpdateChampionship(championship);
         } else
             throw new ExceptionInInitializerError("Championship already exists");
 

@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public class Competitor extends StructureElement<Competitor,  Boat>
 {
-    private Competitor(Long          a_id,
+    public Competitor(Long          a_id,
                        String        a_name,
                        HashSet<Long> a_boats)
     {
@@ -19,7 +19,7 @@ public class Competitor extends StructureElement<Competitor,  Boat>
         if (competitor == null)
         {
             competitor = new Competitor(a_id, a_name, a_boats);
-            StructureManager.addCompetitor(competitor);
+            StructureManager.saveOrUpdateCompetitor(competitor);
         } else
             throw new ExceptionInInitializerError("Competitor already exists");
 

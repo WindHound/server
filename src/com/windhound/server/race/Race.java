@@ -7,7 +7,7 @@ public class Race extends ManageableElement<Boat, Event>
     //private Date     date;
     //private ArrayList<Courses/Classes> courses;
 
-    private Race(Long          a_id,
+    public Race(Long          a_id,
                  String        a_name,
                  HashSet<Long> a_admins,
                  HashSet<Long> a_boats,
@@ -26,7 +26,7 @@ public class Race extends ManageableElement<Boat, Event>
         if (race == null)
         {
             race = new Race(a_id, a_name, a_admins, a_boats, a_events);
-            StructureManager.addRace(race);
+            StructureManager.saveOrUpdateRace(race);
         } else
             throw new ExceptionInInitializerError("Race already exists");
 

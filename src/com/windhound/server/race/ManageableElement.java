@@ -9,7 +9,7 @@ public abstract class ManageableElement<S extends StructureElement, M extends St
 {
     protected HashSet<Long> admins;
 
-    public ManageableElement(Long          a_id,
+    protected ManageableElement(Long          a_id,
                              String        a_name,
                              HashSet<Long> a_admins,
                              HashSet<Long> a_subordinates,

@@ -6,7 +6,7 @@ public class Boat extends ManageableElement<Competitor, Race>
 {
     //private BoatInfo info;
 
-    private Boat(Long          a_id,
+    public Boat(Long          a_id,
                  String        a_name,
                  HashSet<Long> a_admins,
                  HashSet<Long> a_competitors,
@@ -25,7 +25,7 @@ public class Boat extends ManageableElement<Competitor, Race>
         if (boat == null)
         {
             boat = new Boat(a_id, a_name, a_admins, a_competitors, a_races);
-            StructureManager.addBoat(boat);
+            StructureManager.saveOrUpdateBoat(boat);
         } else
             throw new ExceptionInInitializerError("Boat already exists");
 

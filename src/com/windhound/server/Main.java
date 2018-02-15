@@ -41,7 +41,7 @@ public class Main
         /*
         Championship championship = DBManager.loadChampionship(new Long(1));
         championship.loadStructureElement();
-        StructureManager.addBoat(null);
+        StructureManager.saveOrUpdateBoat(null);
         */
     }
 

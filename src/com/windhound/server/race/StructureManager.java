@@ -137,30 +137,90 @@ public class StructureManager
         throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager");
     }
     //
-    // Add
+    // Save or Update
     //
-    public static void addChampionship(Championship championship)
+
+
+//TODO
+//
+//
+//  TTTTTTTTTTTTTTTTTTTTTTT     OOOOOOOOO          DDDDDDDDDDDDD             OOOOOOOOO
+//  T:::::::::::::::::::::T   OO:::::::::OO        D::::::::::::DDD        OO:::::::::OO
+//  T:::::::::::::::::::::T OO:::::::::::::OO      D:::::::::::::::DD    OO:::::::::::::OO
+//  T:::::TT:::::::TT:::::TO:::::::OOO:::::::O     DDD:::::DDDDD:::::D  O:::::::OOO:::::::O
+//  TTTTTT  T:::::T  TTTTTTO::::::O   O::::::O       D:::::D    D:::::D O::::::O   O::::::O
+//          T:::::T        O:::::O     O:::::O       D:::::D     D:::::DO:::::O     O:::::O
+//          T:::::T        O:::::O     O:::::O       D:::::D     D:::::DO:::::O     O:::::O
+//          T:::::T        O:::::O     O:::::O       D:::::D     D:::::DO:::::O     O:::::O
+//          T:::::T        O:::::O     O:::::O       D:::::D     D:::::DO:::::O     O:::::O
+//          T:::::T        O:::::O     O:::::O       D:::::D     D:::::DO:::::O     O:::::O
+//          T:::::T        O:::::O     O:::::O       D:::::D     D:::::DO:::::O     O:::::O
+//          T:::::T        O::::::O   O::::::O       D:::::D    D:::::D O::::::O   O::::::O
+//        TT:::::::TT      O:::::::OOO:::::::O     DDD:::::DDDDD:::::D  O:::::::OOO:::::::O
+//        T:::::::::T       OO:::::::::::::OO      D:::::::::::::::DD    OO:::::::::::::OO
+//        T:::::::::T         OO:::::::::OO        D::::::::::::DDD        OO:::::::::OO
+//        TTTTTTTTTTT           OOOOOOOOO          DDDDDDDDDDDDD             OOOOOOOOO
+//
+//
+//
+//
+//
+//
+//
+
+
+    public static void saveOrUpdateChampionship(Championship championship)
     {
         championships.put(championship.id, championship);
+        //DBManager.addChampionship(championship);
+
+        System.out.println(
+                championship.getID() + " " +
+                championship.getName()
+        );
     }
 
-    public static void addEvent(Event event)
+    public static void saveOrUpdateEvent(Event event)
     {
         events.put(event.id, event);
+        //DBManager.addEvent(event);
+
+        System.out.println(
+                event.getID() + " " +
+                event.getName()
+        );
     }
 
-    public static void addRace(Race race)
+    public static void saveOrUpdateRace(Race race)
     {
         races.put(race.id, race);
+        //DBManager.addRace(race);
+
+        System.out.println(
+                race.getID() + " " +
+                race.getName()
+        );
     }
 
-    public static void addBoat(Boat boat)
+    public static void saveOrUpdateBoat(Boat boat)
     {
         boats.put(boat.id, boat);
+        //DBManager.addBoat(boat);
+
+        System.out.println(
+                boat.getID() + " " +
+                boat.getName()
+        );
     }
 
-    public static void addCompetitor(Competitor competitor)
+    public static void saveOrUpdateCompetitor(Competitor competitor)
     {
         competitors.put(competitor.id, competitor);
+        //DBManager.addCompetitor(competitor);
+
+        System.out.println(
+                competitor.getID() + " " +
+                competitor.getName()
+        );
     }
 }

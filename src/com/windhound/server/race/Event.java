@@ -7,7 +7,7 @@ public class Event extends ManageableElement<Race, Championship>
     //private Date     date;
     //private Location location;
 
-    private Event(Long          a_id,
+    public Event(Long          a_id,
                   String        a_name,
                   HashSet<Long> a_admins,
                   HashSet<Long> a_races,
@@ -26,7 +26,7 @@ public class Event extends ManageableElement<Race, Championship>
         if (event == null)
         {
             event = new Event(a_id, a_name, a_admins, a_races, a_championships);
-            StructureManager.addEvent(event);
+            StructureManager.saveOrUpdateEvent(event);
         } else
             throw new ExceptionInInitializerError("Event already exists");
 
