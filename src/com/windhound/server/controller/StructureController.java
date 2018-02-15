@@ -14,7 +14,7 @@ public class StructureController
     @RequestMapping("/structure/all/championship/")
     public Long[] getAllChampionship()
     {
-        return DBManager.getAllChampionships();
+        return DBManager.loadAllChampionships();
     }
 
     @CrossOrigin
@@ -45,7 +45,7 @@ public class StructureController
     @RequestMapping("/structure/all/event/")
     public Long[] getAllEvent()
     {
-        return DBManager.getAllEvents();
+        return DBManager.loadAllEvents();
     }
 
     @CrossOrigin
@@ -78,7 +78,7 @@ public class StructureController
     @RequestMapping("/structure/all/race/")
     public Long[] getAllRace()
     {
-        return DBManager.getAllRaces();
+        return DBManager.loadAllRaces();
     }
 
     @CrossOrigin
@@ -111,7 +111,7 @@ public class StructureController
     @RequestMapping("/structure/all/boat/")
     public Long[] getAllBoat()
     {
-        return DBManager.getAllBoats();
+        return DBManager.loadAllBoats();
     }
 
     @CrossOrigin

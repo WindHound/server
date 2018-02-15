@@ -24,7 +24,7 @@ public class DBManager
         throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager");
     }
 
-    public static HashSet<Long> getAdmins(Long a_id)
+    public static HashSet<Long> loadAdmins(Long a_id)
     {
         Random        random       = new Random();
         int           count        = 1 + random.nextInt(1);
@@ -36,7 +36,7 @@ public class DBManager
         return subordinates;
     }
 
-    public static HashSet<Long> getSubordinates(Long a_id)
+    public static HashSet<Long> loadSubordinates(Long a_id)
     {
         Random        random       = new Random();
         int           count        = 1 + random.nextInt(2);
@@ -48,7 +48,7 @@ public class DBManager
         return subordinates;
     }
 
-    public static HashSet<Long> getManagers(Long a_id)
+    public static HashSet<Long> loadManagers(Long a_id)
     {
         Random        random   = new Random();
         int           count    = 1 + random.nextInt(2);
@@ -64,8 +64,8 @@ public class DBManager
     {
         Long          id           = a_id;
         String        name         = "championship_id" + id.toString();
-        HashSet<Long> admins       = getAdmins(id);
-        HashSet<Long> events       = getSubordinates(id);
+        HashSet<Long> admins       = loadAdmins(id);
+        HashSet<Long> events       = loadSubordinates(id);
         Championship  championship = Championship.createChampionship(id, name, admins, events);
 
         return championship;
@@ -75,9 +75,9 @@ public class DBManager
     {
         Long          id            = a_id;
         String        name          = "event_id" + id.toString();
-        HashSet<Long> admins        = getAdmins(id);
-        HashSet<Long> races         = getSubordinates(id);
-        HashSet<Long> championships = getManagers(id);
+        HashSet<Long> admins        = loadAdmins(id);
+        HashSet<Long> races         = loadSubordinates(id);
+        HashSet<Long> championships = loadManagers(id);
         Event         event         = Event.createEvent(id, name, admins, races, championships);
 
         return event;
@@ -87,9 +87,9 @@ public class DBManager
     {
         Long          id     = a_id;
         String        name   = "race_id" + id.toString();
-        HashSet<Long> admins = getAdmins(id);
-        HashSet<Long> boats  = getSubordinates(id);
-        HashSet<Long> events = getManagers(id);
+        HashSet<Long> admins = loadAdmins(id);
+        HashSet<Long> boats  = loadSubordinates(id);
+        HashSet<Long> events = loadManagers(id);
         Race          race   = Race.createRace(id, name, admins, boats, events);
 
         return race;
@@ -99,9 +99,9 @@ public class DBManager
     {
         Long          id          = a_id;
         String        name        = "boat_id" + id.toString();
-        HashSet<Long> admins      = getAdmins(id);
-        HashSet<Long> competitors = getSubordinates(id);
-        HashSet<Long> races       = getManagers(id);
+        HashSet<Long> admins      = loadAdmins(id);
+        HashSet<Long> competitors = loadSubordinates(id);
+        HashSet<Long> races       = loadManagers(id);
         Boat          boat        = Boat.createBoat(id, name, admins, competitors, races);
 
         return boat;
@@ -111,15 +111,15 @@ public class DBManager
     {
         Long          id         = a_id;
         String        name       = "competitor_id" + id.toString();
-        HashSet<Long> boats      = getManagers(id);
+        HashSet<Long> boats      = loadManagers(id);
         Competitor    competitor = Competitor.createCompetitor(id, name, boats);
 
         return competitor;
     }
     //
-    // Get all IDs
+    // Load all IDs
     //
-    public static Long[] getAllChampionships()
+    public static Long[] loadAllChampionships()
     {
         Random          random        = new Random();
         int             count         = random.nextInt(5);
@@ -131,7 +131,7 @@ public class DBManager
         return championships.toArray(new Long[championships.size()]);
     }
 
-    public static Long[] getAllEvents()
+    public static Long[] loadAllEvents()
     {
         Random          random        = new Random();
         int             count         = random.nextInt(5);
@@ -143,7 +143,7 @@ public class DBManager
         return events.toArray(new Long[events.size()]);
     }
 
-    public static Long[] getAllRaces()
+    public static Long[] loadAllRaces()
     {
         Random          random        = new Random();
         int             count         = random.nextInt(5);
@@ -155,7 +155,7 @@ public class DBManager
         return races.toArray(new Long[races.size()]);
     }
 
-    public static Long[] getAllBoats()
+    public static Long[] loadAllBoats()
     {
         Random          random        = new Random();
         int             count         = random.nextInt(5);
