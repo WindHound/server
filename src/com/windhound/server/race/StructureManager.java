@@ -140,7 +140,6 @@ public class StructureManager
     // Save or Update
     //
 
-
 //TODO
 //
 //
@@ -168,11 +167,10 @@ public class StructureManager
 //
 //
 
-
     public static void saveOrUpdateChampionship(Championship championship)
     {
         championships.put(championship.id, championship);
-        //DBManager.addChampionship(championship);
+        DBManager.saveChampionship(championship);
 
         System.out.println(
                 championship.getID() + " " +
@@ -183,7 +181,7 @@ public class StructureManager
     public static void saveOrUpdateEvent(Event event)
     {
         events.put(event.id, event);
-        //DBManager.addEvent(event);
+        DBManager.saveEvent(event);
 
         System.out.println(
                 event.getID() + " " +
@@ -194,7 +192,7 @@ public class StructureManager
     public static void saveOrUpdateRace(Race race)
     {
         races.put(race.id, race);
-        //DBManager.addRace(race);
+        DBManager.saveRace(race);
 
         System.out.println(
                 race.getID() + " " +
@@ -205,7 +203,7 @@ public class StructureManager
     public static void saveOrUpdateBoat(Boat boat)
     {
         boats.put(boat.id, boat);
-        //DBManager.addBoat(boat);
+        DBManager.saveBoat(boat);
 
         System.out.println(
                 boat.getID() + " " +
@@ -216,7 +214,7 @@ public class StructureManager
     public static void saveOrUpdateCompetitor(Competitor competitor)
     {
         competitors.put(competitor.id, competitor);
-        //DBManager.addCompetitor(competitor);
+        DBManager.saveCompetitor(competitor);
 
         System.out.println(
                 competitor.getID() + " " +

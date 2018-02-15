@@ -166,4 +166,31 @@ public class DBManager
 
         return boats.toArray(new Long[boats.size()]);
     }
+    //
+    // Save
+    //
+    public static boolean saveChampionship(Championship championship)
+    {
+        return true;
+    }
+
+    public static boolean saveEvent(Event event)
+    {
+        return true;
+    }
+
+    public static boolean saveRace(Race race)
+    {
+        return true;
+    }
+
+    public static boolean saveBoat(Boat boat)
+    {
+        return true;
+    }
+
+    public static boolean saveCompetitor(Competitor competitor)
+    {
+        return true;
+    }
 }

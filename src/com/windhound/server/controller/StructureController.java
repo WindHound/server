@@ -10,7 +10,9 @@ import java.util.List;
 @RestController
 public class StructureController
 {
+    //
     // Championships
+    //
     @RequestMapping("/structure/all/championship/")
     public Long[] getAllChampionship()
     {
@@ -40,8 +42,9 @@ public class StructureController
     {
         return StructureManager.getOrLoadChampionship(id);
     }
-
+    //
     // Events
+    //
     @RequestMapping("/structure/all/event/")
     public Long[] getAllEvent()
     {
@@ -73,8 +76,9 @@ public class StructureController
     {
         return StructureManager.getOrLoadEvent(id);
     }
-
+    //
     // Races
+    //
     @RequestMapping("/structure/all/race/")
     public Long[] getAllRace()
     {
@@ -106,8 +110,9 @@ public class StructureController
     {
         return StructureManager.getOrLoadRace(id);
     }
-
+    //
     // Boats
+    //
     @RequestMapping("/structure/all/boat/")
     public Long[] getAllBoat()
     {
@@ -139,8 +144,9 @@ public class StructureController
     {
         return StructureManager.getOrLoadBoat(id);
     }
-
+    //
     // Competitors
+    //
     @CrossOrigin
     @PostMapping("/structure/add/competitor/")
     public String addCompetitor(@RequestParam(value = "id")         Long       id,
