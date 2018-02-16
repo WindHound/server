@@ -1,6 +1,7 @@
 package com.windhound.server.database;
 
 import com.windhound.server.race.*;
+import org.apache.commons.lang.text.StrSubstitutor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -40,6 +41,10 @@ public class DBManager
         }
     }
 
+
+    //
+    //
+    //
     public static Connection getNewConnection() {
         Connection connection = null;
         try
@@ -115,27 +120,15 @@ public class DBManager
         return table.getValueAt(rowId, columnId);
     }
 
-    public static HashSet<Long> getAdminsByEventTypeAndID(Connection connection, String stageType, Long stageID) {
-        JTable table = executeQuery(connection, queryAdminsByStageType + "'" + stageType + "'"
-                + " AND STAGE_ID=" + stageID);
 
-
-        HashSet<Long> admins = new HashSet<>();
-
-        for (int i = 0; i < table.getRowCount(); ++i)
-        {
-            Long id = ((BigDecimal)getValueAt(table, i, "USER_ID")).longValue();
-            admins.add(id);
-        }
-
-        return admins;
-    }
-
+    //
+    //----------< LOAD >----------
+    //
 
     //
     // Get all stage IDs
     //
-    public static Long[] getAllChampionships(Connection connection) {
+    public static Long[] loadAllChampionships(Connection connection) {
         JTable table = executeQuery(connection, queryAllChampionships);
 
         ArrayList<Long> championships = new ArrayList<>();
@@ -149,7 +142,7 @@ public class DBManager
         return championships.toArray(new Long[championships.size()]);
     }
 
-    public static Long[] getAllEvents(Connection connection) {
+    public static Long[] loadAllEvents(Connection connection) {
         JTable table = executeQuery(connection, queryAllEvents);
 
         ArrayList<Long> events = new ArrayList<>();
@@ -163,7 +156,7 @@ public class DBManager
         return events.toArray(new Long[events.size()]);
     }
 
-    public static Long[] getAllRaces(Connection connection) {
+    public static Long[] loadAllRaces(Connection connection) {
         JTable table = executeQuery(connection, queryAllRaces);
 
         ArrayList<Long> races = new ArrayList<>();
@@ -180,6 +173,22 @@ public class DBManager
     //
     // Get StructureElement objects
     //
+    public static HashSet<Long> loadAdminsByEventTypeAndID(Connection connection, String stageType, Long stageID) {
+        JTable table = executeQuery(connection, queryAdminsByStageType + "'" + stageType + "'"
+                + " AND STAGE_ID=" + stageID);
+
+
+        HashSet<Long> admins = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal)getValueAt(table, i, "USER_ID")).longValue();
+            admins.add(id);
+        }
+
+        return admins;
+    }
+
     public static StructureElement loadStructureElement(Class type, Long id) {
         Connection connection = getNewConnection();
         return loadStructureElement(connection, type, id);
@@ -244,7 +253,7 @@ public class DBManager
 
         HashSet<Long> boats = loadBoatsByRaceID(connection, raceID);
         HashSet<Long> events = loadEventsByRaceID(connection, raceID);
-        HashSet<Long> admins = getAdminsByEventTypeAndID(connection, "Race", raceID);
+        HashSet<Long> admins = loadAdminsByEventTypeAndID(connection, "Race", raceID);
 
         Race race = Race.createRace(
                 id,
@@ -266,7 +275,7 @@ public class DBManager
 
         HashSet<Long> races = loadRacesByEventID(connection, eventID);
         HashSet<Long> championships = loadChampionshipsByEventID(connection, eventID);
-        HashSet<Long> admins = getAdminsByEventTypeAndID(connection, "Event", eventID);
+        HashSet<Long> admins = loadAdminsByEventTypeAndID(connection, "Event", eventID);
 
         Event event = Event.createEvent(
                 id,
@@ -286,7 +295,7 @@ public class DBManager
         String name = (String)getValueAt(table, 0, "NAME");
 
         HashSet<Long> events = loadEventsByChampionshipID(connection, championshipID);
-        HashSet<Long> admins = getAdminsByEventTypeAndID(connection, "Championship", championshipID);
+        HashSet<Long> admins = loadAdminsByEventTypeAndID(connection, "Championship", championshipID);
 
         Championship championship = Championship.createChampionship(
                 id,
@@ -297,6 +306,8 @@ public class DBManager
 
         return championship;
     }
+
+
 
 
     //
@@ -402,6 +413,35 @@ public class DBManager
 
 
     //
+    //----------< SAVE >----------
+    //
+
+    public static Long saveChampionship (Championship championship) {
+        Map<String, String> valuesMap = new HashMap<>();
+
+        //championship.getID() == null      <- Use for (update|add)
+        //update rel_championship_event set CHAMPIONSHIP_ID=1 where EVENT_ID=1 and CHAMPIONSHIP_ID=2
+        //^^^ example update query
+
+        valuesMap.put("name"      , championship.getName());
+        valuesMap.put("start_date", "1970-02-16 10:50:39.513000000");
+        valuesMap.put("end_date"  , "1970-02-17 10:50:39.513000000");
+
+        StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+        String finalQuery = sub.replace(queryInsertChampionship);
+
+
+        return new Long(-1);
+    }
+
+
+
+
+
+
+
+    //
     // Query strings
     //
     private static String queryAllChampionships =
@@ -439,4 +479,10 @@ public class DBManager
             "select * from REL_CHAMPIONSHIP_EVENT where EVENT_ID=";
     private static String queryRelationEventsByChampionship =
             "select * from REL_CHAMPIONSHIP_EVENT where CHAMPIONSHIP_ID=";
+
+    private static String queryInsertChampionship =
+            "INSERT INTO CHAMPIONSHIP (NAME, START_TIME, END_TIME) VALUES (" +
+            "'${name}'                                                    ," +
+            "TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF')    ," +
+            "TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF')    )";
 }

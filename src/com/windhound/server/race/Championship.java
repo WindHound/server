@@ -1,5 +1,6 @@
 package com.windhound.server.race;
 
+import java.sql.Date;
 import java.util.HashSet;
 
 public class Championship extends ManageableElement<Event, Championship>
