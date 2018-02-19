@@ -4,6 +4,7 @@ import com.windhound.server.database.DBManager;
 import com.windhound.server.race.*;
 
 import java.sql.Connection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -40,26 +41,14 @@ public class Main
         Connection connection = DBManager.getNewConnection();
 
 
-        /*
-        Championship championship = DBManagerOLD.loadChampionship(new Long(1));
-        championship.loadStructureElement();
-        StructureManager.addBoat(null);
-        */
+        HashSet<Long> admins = new HashSet<>();
+        admins.add(new Long(4));
 
-        /*Competitor competitor = DBManager.loadCompetitorByID(connection, (long)5);
-        Boat boat = DBManager.loadBoatByID(connection, (long)1);
-        boat.loadStructure();*/
+        HashSet<Long> events = new HashSet<>();
+        events.add(new Long(1));
 
-//        Race race = DBManager.loadRaceByID(connection, (long)10);
-//        System.out.println(race.getName());
-
-//        Event event = DBManager.loadEventByID(connection, (long)1);
-//        System.out.println(event.getName());
-
-        Championship championship = DBManager.loadChampionshipByID(connection, (long)1);
-        System.out.println(championship.getSubordinates());
-
-//        System.out.println(DBManager.getAllRaces(connection).length);
+        Championship championship = Championship.createChampionship(null, "finalTest", admins, events);
+        DBManager.saveChampionship(connection, championship);
 
 
     }

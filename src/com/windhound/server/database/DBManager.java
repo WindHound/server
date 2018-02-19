@@ -61,7 +61,7 @@ public class DBManager
         return connection;
     }
 
-    private static JTable executeQuery(Connection connection, String queryString) {
+    private static JTable executeLoadQuery(Connection connection, String queryString) {
         ResultSet rs = null;
         JTable table = null;
 
@@ -88,6 +88,22 @@ public class DBManager
         }
 
         return table;
+    }
+
+    private static Long executeSetQuery(Connection connection, String queryString) {
+        Long state = new Long(1);
+
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeQuery(queryString);
+        }
+        catch(Exception e) {
+            state = new Long(-1);
+            System.out.println(e);
+            System.exit(1);
+        }
+
+        return state;
     }
     
     public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
@@ -129,7 +145,7 @@ public class DBManager
     // Get all stage IDs
     //
     public static Long[] loadAllChampionships(Connection connection) {
-        JTable table = executeQuery(connection, queryAllChampionships);
+        JTable table = executeLoadQuery(connection, queryAllChampionships);
 
         ArrayList<Long> championships = new ArrayList<>();
 
@@ -143,7 +159,7 @@ public class DBManager
     }
 
     public static Long[] loadAllEvents(Connection connection) {
-        JTable table = executeQuery(connection, queryAllEvents);
+        JTable table = executeLoadQuery(connection, queryAllEvents);
 
         ArrayList<Long> events = new ArrayList<>();
 
@@ -157,7 +173,7 @@ public class DBManager
     }
 
     public static Long[] loadAllRaces(Connection connection) {
-        JTable table = executeQuery(connection, queryAllRaces);
+        JTable table = executeLoadQuery(connection, queryAllRaces);
 
         ArrayList<Long> races = new ArrayList<>();
 
@@ -174,7 +190,7 @@ public class DBManager
     // Get StructureElement objects
     //
     public static HashSet<Long> loadAdminsByEventTypeAndID(Connection connection, String stageType, Long stageID) {
-        JTable table = executeQuery(connection, queryAdminsByStageType + "'" + stageType + "'"
+        JTable table = executeLoadQuery(connection, queryAdminsByStageType + "'" + stageType + "'"
                 + " AND STAGE_ID=" + stageID);
 
 
@@ -210,7 +226,7 @@ public class DBManager
     }
 
     public static Boat loadBoatByID(Connection connection, Long boatID) {
-        JTable table = executeQuery(connection, queryBoatByID + boatID);
+        JTable table = executeLoadQuery(connection, queryBoatByID + boatID);
 
         Long   id   = ((BigDecimal)getValueAt(table, 0, "BOAT_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
@@ -229,7 +245,7 @@ public class DBManager
     }
 
     public static Competitor loadCompetitorByID(Connection connection, Long competitorID) {
-        JTable table = executeQuery(connection, queryCompetitorByID + competitorID);
+        JTable table = executeLoadQuery(connection, queryCompetitorByID + competitorID);
 
         Long   id   = ((BigDecimal)getValueAt(table, 0, "USER_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
@@ -246,7 +262,7 @@ public class DBManager
     }
 
     public static Race loadRaceByID(Connection connection, Long raceID) {
-        JTable table = executeQuery(connection, queryRaceByID + raceID);
+        JTable table = executeLoadQuery(connection, queryRaceByID + raceID);
 
         Long   id   = ((BigDecimal)getValueAt(table, 0, "RACE_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
@@ -268,7 +284,7 @@ public class DBManager
     }
 
     public static Event loadEventByID(Connection connection, Long eventID) {
-        JTable table = executeQuery(connection, queryEventByID + eventID);
+        JTable table = executeLoadQuery(connection, queryEventByID + eventID);
 
         Long   id   = ((BigDecimal)getValueAt(table, 0, "EVENT_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
@@ -289,7 +305,7 @@ public class DBManager
     }
 
     public static Championship loadChampionshipByID(Connection connection, Long championshipID) {
-        JTable table = executeQuery(connection, queryChampionshipByID + championshipID);
+        JTable table = executeLoadQuery(connection, queryChampionshipByID + championshipID);
 
         Long   id   = ((BigDecimal)getValueAt(table, 0, "CHAMPIONSHIP_ID")).longValue();
         String name = (String)getValueAt(table, 0, "NAME");
@@ -314,7 +330,7 @@ public class DBManager
     // Get StructureElement relations
     //
     public static HashSet<Long> loadBoatsByCompetitorID(Connection connection, Long competitorID) {
-        JTable table = executeQuery(connection, queryRelationBoatsByCompetitor + competitorID);
+        JTable table = executeLoadQuery(connection, queryRelationBoatsByCompetitor + competitorID);
 
         HashSet<Long> boats = new HashSet<>();
 
@@ -328,7 +344,7 @@ public class DBManager
     }
 
     public static HashSet<Long> loadCompetitorsByBoatID(Connection connection, Long boatID) {
-        JTable table = executeQuery(connection, queryRelationCompetitorsByBoat + boatID);
+        JTable table = executeLoadQuery(connection, queryRelationCompetitorsByBoat + boatID);
 
         HashSet<Long> competitors = new HashSet<>();
 
@@ -342,7 +358,7 @@ public class DBManager
     }
 
     private static HashSet<Long> loadBoatsByRaceID(Connection connection, Long raceID) {
-        JTable table = executeQuery(connection, queryRelationBoatsByRace + raceID);
+        JTable table = executeLoadQuery(connection, queryRelationBoatsByRace + raceID);
 
         HashSet<Long> boats = new HashSet<>();
 
@@ -356,7 +372,7 @@ public class DBManager
     }
 
     private static HashSet<Long> loadEventsByRaceID(Connection connection, Long raceID) {
-        JTable table = executeQuery(connection, queryRelationEventsByRace + raceID);
+        JTable table = executeLoadQuery(connection, queryRelationEventsByRace + raceID);
 
         HashSet<Long> events = new HashSet<>();
 
@@ -370,7 +386,7 @@ public class DBManager
     }
 
     private static HashSet<Long> loadChampionshipsByEventID(Connection connection, Long eventID) {
-        JTable table = executeQuery(connection, queryRelationChampionshipsByEvent + eventID);
+        JTable table = executeLoadQuery(connection, queryRelationChampionshipsByEvent + eventID);
 
         HashSet<Long> championships = new HashSet<>();
 
@@ -384,7 +400,7 @@ public class DBManager
     }
 
     private static HashSet<Long> loadRacesByEventID(Connection connection, Long eventID) {
-        JTable table = executeQuery(connection, queryRelationRacesByEvent + eventID);
+        JTable table = executeLoadQuery(connection, queryRelationRacesByEvent + eventID);
 
         HashSet<Long> races = new HashSet<>();
 
@@ -398,7 +414,7 @@ public class DBManager
     }
 
     private static HashSet<Long> loadEventsByChampionshipID(Connection connection, Long championshipID) {
-        JTable table = executeQuery(connection, queryRelationEventsByChampionship + championshipID);
+        JTable table = executeLoadQuery(connection, queryRelationEventsByChampionship + championshipID);
 
         HashSet<Long> events = new HashSet<>();
 
@@ -416,9 +432,12 @@ public class DBManager
     //----------< SAVE >----------
     //
 
-    public static Long saveChampionship (Championship championship) {
+    public static Long saveChampionship (Connection connection, Championship championship) {
         Map<String, String> valuesMap = new HashMap<>();
+        Map<String, String> adminMap = new HashMap<>();
+        Map<String, String> eventMap = new HashMap<>();
 
+        //TODO (update|add) functionality, depending on presence of id in object;
         //championship.getID() == null      <- Use for (update|add)
         //update rel_championship_event set CHAMPIONSHIP_ID=1 where EVENT_ID=1 and CHAMPIONSHIP_ID=2
         //^^^ example update query
@@ -428,11 +447,44 @@ public class DBManager
         valuesMap.put("end_date"  , "1970-02-17 10:50:39.513000000");
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
-
         String finalQuery = sub.replace(queryInsertChampionship);
+        executeSetQuery(connection, finalQuery);
 
 
-        return new Long(-1);
+        //Get Championship's ID
+        String idQuery = sub.replace(queryLatestChampionshipByName);
+        JTable table = executeLoadQuery(connection, idQuery);
+        Object id = table.getValueAt(0,0);
+
+
+        //Save admins
+        List<Long> admins = championship.getAdmins();
+        adminMap.put("stage_id", id.toString());
+
+        for (Long admin : admins) {
+            adminMap.put("user_id", admin.toString());
+            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
+            String finalAdminQuery = adminSub.replace(queryInsertChampionshipAdmins);
+
+            executeSetQuery(connection, finalAdminQuery);
+        }
+
+
+        //Save events
+        List<Long> events = championship.getSubordinates();
+        eventMap.put("championship_id", id.toString());
+
+        for (Long event : events) {
+            eventMap.put("event_id", event.toString());
+            StrSubstitutor eventSub = new StrSubstitutor(eventMap);
+            String finalEventQuery = eventSub.replace(queryInsertChampionshipEventsRelation);
+
+            executeSetQuery(connection, finalEventQuery);
+        }
+
+
+        //TODO return championship id for successful store, -1 for unsuccessful
+        return new Long(id.toString());
     }
 
 
@@ -480,9 +532,22 @@ public class DBManager
     private static String queryRelationEventsByChampionship =
             "select * from REL_CHAMPIONSHIP_EVENT where CHAMPIONSHIP_ID=";
 
+
+
     private static String queryInsertChampionship =
             "INSERT INTO CHAMPIONSHIP (NAME, START_TIME, END_TIME) VALUES (" +
             "'${name}'                                                    ," +
             "TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF')    ," +
             "TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF')    )";
+    private static String queryInsertChampionshipAdmins =
+            "INSERT INTO ADMINS (USER_ID, STAGE_TYPE, STAGE_ID) VALUES (" +
+            "'${user_id}'                                              ," +
+            "'Championship'                                            ," +
+            "'${stage_id}'                                             )";
+    private static String queryLatestChampionshipByName =
+            "SELECT (CHAMPIONSHIP_ID) FROM CHAMPIONSHIP WHERE NAME='${name}' ORDER BY CHAMPIONSHIP_ID DESC";
+    private static String queryInsertChampionshipEventsRelation =
+            "INSERT INTO REL_CHAMPIONSHIP_EVENT (CHAMPIONSHIP_ID, EVENT_ID) VALUES (" +
+            "'${championship_id}'                                                  ," +
+            "'${event_id}'                                                         )";
 }
