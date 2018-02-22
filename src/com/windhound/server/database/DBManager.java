@@ -433,14 +433,23 @@ public class DBManager
     //
 
     public static Long saveChampionship (Connection connection, Championship championship) {
+        Long championshipID = null;
+
+        if (championship.getID() != null) {
+            championshipID = executeUpdateChampionship(connection, championship);
+        }
+        else {
+            championshipID = executeSaveChampionship(connection, championship);
+        }
+
+        return championshipID;
+    }
+
+    private static Long executeSaveChampionship(Connection connection, Championship championship) {
+
         Map<String, String> valuesMap = new HashMap<>();
         Map<String, String> adminMap = new HashMap<>();
         Map<String, String> eventMap = new HashMap<>();
-
-        //TODO (update|add) functionality, depending on presence of id in object;
-        //championship.getID() == null      <- Use for (update|add)
-        //update rel_championship_event set CHAMPIONSHIP_ID=1 where EVENT_ID=1 and CHAMPIONSHIP_ID=2
-        //^^^ example update query
 
         valuesMap.put("name"      , championship.getName());
         valuesMap.put("start_date", "1970-02-16 10:50:39.513000000");
@@ -482,12 +491,28 @@ public class DBManager
             executeSetQuery(connection, finalEventQuery);
         }
 
-
-        //TODO return championship id for successful store, -1 for unsuccessful
         return new Long(id.toString());
     }
 
 
+    private static Long executeUpdateChampionship(Connection connection, Championship championship) {
+        Championship preUpdate = loadChampionshipByID(connection, championship.getID());
+
+        //Update fields:
+        //  Name
+        //  Start Time
+        //  End Time
+        //  Admins
+        //  Events
+
+        if (championship.getName() != preUpdate.getName()) {
+            executeSetQuery(connection, "UPDATE CHAMPIONSHIP SET NAME='" + championship.getName() +
+                    "' WHERE CHAMPIONSHIP_ID=" + championship.getID());
+        }
+
+
+        return new Long(-1);
+    }
 
 
 
