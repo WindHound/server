@@ -4,7 +4,6 @@ import com.windhound.server.database.DBManager;
 import com.windhound.server.race.*;
 
 import java.sql.Connection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -40,15 +39,10 @@ public class Main
         appContext = app.run(args);
         Connection connection = DBManager.getNewConnection();
 
+        Championship c = DBManager.loadChampionshipByID(connection, new Long(25));
+        System.out.println(c.getStartDate().toString());
 
-        HashSet<Long> admins = new HashSet<>();
-        admins.add(new Long(4));
 
-        HashSet<Long> events = new HashSet<>();
-        events.add(new Long(1));
-
-        Championship championship = Championship.createChampionship(null, "finalTest", admins, events);
-        DBManager.saveChampionship(connection, championship);
 
 
     }

@@ -1,12 +1,15 @@
 package com.windhound.server.race;
 
-import java.sql.Date;
+import oracle.sql.TIMESTAMP;
+
 import java.util.HashSet;
 
 public class Championship extends ManageableElement<Event, Championship>
 {
-    //private Date date;
+    private TIMESTAMP start_date;
+    private TIMESTAMP end_date;
 
+    //TODO: How to set variables individually?
     private Championship(Long          a_id,
                          String        a_name,
                          HashSet<Long> a_admins,
@@ -29,5 +32,21 @@ public class Championship extends ManageableElement<Event, Championship>
             throw new ExceptionInInitializerError("Championship already exists");
 
         return championship;
+    }
+
+    public TIMESTAMP getStartDate() {
+        return start_date;
+    }
+
+    public void setStartDate(TIMESTAMP start_date) {
+        this.start_date = start_date;
+    }
+
+    public TIMESTAMP getEndDate() {
+        return end_date;
+    }
+
+    public void setEndDate(TIMESTAMP end_date) {
+        this.end_date = end_date;
     }
 }

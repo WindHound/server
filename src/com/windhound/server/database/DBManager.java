@@ -320,6 +320,9 @@ public class DBManager
                 events
         );
 
+        championship.setStartDate((oracle.sql.TIMESTAMP) getValueAt(table, 0, "START_TIME"));
+        championship.setEndDate((oracle.sql.TIMESTAMP) getValueAt(table, 0, "END_TIME"));
+
         return championship;
     }
 
@@ -429,8 +432,22 @@ public class DBManager
 
 
     //
-    //----------< SAVE >----------
+    //----------< SAVE|UPDATE >----------
     //
+
+    private static void listIterateAndSQLExecute(
+        Connection connection, List<Long> list, String iterateField, String query) {
+
+        Map<String, String> map = new HashMap<>();
+
+        for (Long listItem : list) {
+            map.put(iterateField, listItem.toString());
+            StrSubstitutor sub = new StrSubstitutor(map);
+            String finalQuery = sub.replace(query);
+
+            executeSetQuery(connection, finalQuery);
+        }
+    }
 
     public static Long saveOrUpdateChampionship (Connection connection, Championship championship) {
         Long championshipID = null;
@@ -440,58 +457,49 @@ public class DBManager
         Map<String, String> eventMap = new HashMap<>();
 
         valuesMap.put("name"      , championship.getName());
-        valuesMap.put("start_date", "1970-02-16 10:50:39.513000000");
-        valuesMap.put("end_date"  , "1970-02-17 10:50:39.513000000");
+        valuesMap.put("start_date", championship.getStartDate().toString());
+        valuesMap.put("end_date"  , championship.getEndDate().toString());
 
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
+        //UPDATE
         if (championship.getID() != null) {
             valuesMap.put("id", championship.getID().toString());
             String finalQuery = sub.replace(queryUpdateChampionship);
             executeSetQuery(connection, finalQuery);
 
             championshipID = championship.getID();
+
+            //Delete admins
+            adminMap.put("stage_id", championshipID.toString());
+            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
+            String finalAdminQuery = adminSub.replace(queryDeleteChampionshipAdmins);
+
+            executeSetQuery(connection, finalAdminQuery);
+
+
+            //Delete events
+            eventMap.put("championship_id", championshipID.toString());
+            StrSubstitutor eventSub = new StrSubstitutor(eventMap);
+            String finalEventQuery = eventSub.replace(queryDeleteChampionshipEventsRelation);
+
+            executeSetQuery(connection, finalEventQuery);
+
         }
+        //INSERT
         else {
             String finalQuery = sub.replace(queryInsertChampionship);
             executeSetQuery(connection, finalQuery);
 
             String idQuery = sub.replace(queryLatestChampionshipByName);
             JTable table   = executeLoadQuery(connection, idQuery);
-            championshipID = (Long)table.getValueAt(0,0);
+            championshipID = Long.valueOf(table.getValueAt(0,0).toString());
 
-            // TODO: delete all relationships/admins
         }
-
-        // TODO: add all relationships/admins
-
-        return championshipID;
-    }
-
-    private static Long executeSaveChampionship(Connection connection, Championship championship) {
-
-        Map<String, String> valuesMap = new HashMap<>();
-        Map<String, String> adminMap = new HashMap<>();
-        Map<String, String> eventMap = new HashMap<>();
-
-        valuesMap.put("name"      , championship.getName());
-        valuesMap.put("start_date", "1970-02-16 10:50:39.513000000");
-        valuesMap.put("end_date"  , "1970-02-17 10:50:39.513000000");
-
-        StrSubstitutor sub = new StrSubstitutor(valuesMap);
-        String finalQuery = sub.replace(queryInsertChampionship);
-        executeSetQuery(connection, finalQuery);
-
-
-        //Get Championship's ID
-        String idQuery = sub.replace(queryLatestChampionshipByName);
-        JTable table = executeLoadQuery(connection, idQuery);
-        Object id = table.getValueAt(0,0);
-
 
         //Save admins
         List<Long> admins = championship.getAdmins();
-        adminMap.put("stage_id", id.toString());
+        adminMap.put("stage_id", championshipID.toString());
 
         for (Long admin : admins) {
             adminMap.put("user_id", admin.toString());
@@ -501,10 +509,9 @@ public class DBManager
             executeSetQuery(connection, finalAdminQuery);
         }
 
-
         //Save events
         List<Long> events = championship.getSubordinates();
-        eventMap.put("championship_id", id.toString());
+        eventMap.put("championship_id", championshipID.toString());
 
         for (Long event : events) {
             eventMap.put("event_id", event.toString());
@@ -514,42 +521,12 @@ public class DBManager
             executeSetQuery(connection, finalEventQuery);
         }
 
-        return new Long(id.toString());
+
+
+        return championshipID;
     }
 
 
-    private static Long executeUpdateChampionship(Connection connection, Championship championship) {
-        Championship preUpdate = loadChampionshipByID(connection, championship.getID());
-
-        //Update fields:
-        //  Name
-        //  Start Time
-        //  End Time
-        //  Admins
-        //  Events
-
-        //Name
-        if (!championship.getName().equals(preUpdate.getName())) {
-            executeSetQuery(connection, "UPDATE CHAMPIONSHIP SET NAME='" + championship.getName() +
-                    "' WHERE CHAMPIONSHIP_ID=" + championship.getID());
-        }
-
-        //Admins
-        if (!championship.getAdmins().equals(preUpdate.getAdmins())) {
-            executeSetQuery(connection, "UPDATE ADMINS SET NAME='" + championship.getName() +
-                    "' WHERE CHAMPIONSHIP_ID=" + championship.getID());
-        }
-
-        //Events
-        if (!championship.getAdmins().equals(preUpdate.getAdmins())) {
-
-        }
-
-
-
-
-        return new Long(-1);
-    }
 
 
 
@@ -602,17 +579,21 @@ public class DBManager
             "TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF')    ," +
             "TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF')    )";
     private static String queryUpdateChampionship =
-            "UPDATE CHAMPIONSHIP SET " +
-            "NAME=${name}, " +
+            "UPDATE CHAMPIONSHIP SET                                               " +
+            "NAME='${name}',                                                       " +
             "START_TIME=TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF'), " +
-            "END_TIME=TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF') " +
-            "WHERE CHAMPIONSHIP_ID=${id}";
+            "END_TIME=TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF')    " +
+            "WHERE CHAMPIONSHIP_ID=${id}                                           ";
 
     private static String queryInsertChampionshipAdmins =
             "INSERT INTO ADMINS (USER_ID, STAGE_TYPE, STAGE_ID) VALUES (" +
             "'${user_id}'                                              ," +
             "'Championship'                                            ," +
             "'${stage_id}'                                             )";
+    private static String queryDeleteChampionshipAdmins =
+            "DELETE FROM ADMINS WHERE STAGE_ID=${stage_id} AND STAGE_TYPE='Championship'";
+    private static String queryDeleteChampionshipEventsRelation =
+            "DELETE FROM REL_CHAMPIONSHIP_EVENT WHERE CHAMPIONSHIP_ID=${championship_id}";
     private static String queryLatestChampionshipByName =
             "SELECT (CHAMPIONSHIP_ID) FROM CHAMPIONSHIP WHERE NAME='${name}' ORDER BY CHAMPIONSHIP_ID DESC";
     private static String queryInsertChampionshipEventsRelation =
