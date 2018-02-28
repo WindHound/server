@@ -6,8 +6,7 @@ import java.util.HashSet;
 
 public class Championship extends ManageableElement<Event, Championship>
 {
-    private TIMESTAMP start_date;
-    private TIMESTAMP end_date;
+    private TIMESTAMP start_date, end_date;
 
     //TODO: How to set variables individually?
     private Championship(Long          a_id,

@@ -1,11 +1,13 @@
 package com.windhound.server.race;
 
+import oracle.sql.TIMESTAMP;
+
 import java.util.HashSet;
 
 public class Event extends ManageableElement<Race, Championship>
 {
-    //private Date     date;
-    //private Location location;
+    private TIMESTAMP start_date, end_date;
+    //private Long longitude, latitude;
 
     private Event(Long          a_id,
                   String        a_name,
@@ -31,5 +33,21 @@ public class Event extends ManageableElement<Race, Championship>
             throw new ExceptionInInitializerError("Event already exists");
 
         return event;
+    }
+
+    public TIMESTAMP getStartDate() {
+        return start_date;
+    }
+
+    public void setStartDate(TIMESTAMP start_date) {
+        this.start_date = start_date;
+    }
+
+    public TIMESTAMP getEndDate() {
+        return end_date;
+    }
+
+    public void setEndDate(TIMESTAMP end_date) {
+        this.end_date = end_date;
     }
 }
