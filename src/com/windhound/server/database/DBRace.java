@@ -117,24 +117,24 @@ public class DBRace {
 
         //Save boats
         List<Long> boats = race.getAdmins();
-        adminMap.put("event_id", raceID.toString());
+        boatMap.put("event_id", raceID.toString());
 
         for (Long boat : boats) {
-            adminMap.put("boat_id", boat.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryInsertRaceBoats);
+            boatMap.put("boat_id", boat.toString());
+            StrSubstitutor boatSub = new StrSubstitutor(boatMap);
+            String finalAdminQuery = boatSub.replace(queryInsertRaceBoats);
 
             DBManager.executeSetQuery(connection, finalAdminQuery);
         }
 
         //Save events
         List<Long> events = race.getAdmins();
-        adminMap.put("race_id", raceID.toString());
+        eventMap.put("race_id", raceID.toString());
 
         for (Long event : events) {
-            adminMap.put("event_id", event.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryInsertRaceEvents);
+            eventMap.put("event_id", event.toString());
+            StrSubstitutor eventSub = new StrSubstitutor(eventMap);
+            String finalAdminQuery = eventSub.replace(queryInsertRaceEvents);
 
             DBManager.executeSetQuery(connection, finalAdminQuery);
         }
@@ -152,7 +152,7 @@ public class DBRace {
         deleteRaceBoats(connection, raceID);
         deleteRaceEvents(connection, raceID);
 
-        return new Long(-1);
+        return state;
     }
 
     private static Long deleteRaceEvents(Connection connection, Long raceID) {
