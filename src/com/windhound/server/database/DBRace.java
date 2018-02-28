@@ -59,6 +59,21 @@ public class DBRace {
         return events;
     }
 
+    public static Long saveOrUpdateRace (Connection connection, Race race) {
+        //TODO: implement saveOrUpdateRace
+
+
+        return new Long(-1);
+    }
+
+    public static Long deleteRace (Connection connection, Long raceID) {
+        //TODO: implement deleteRace
+
+
+        return new Long(-1);
+    }
+
+
 
     private static String queryRaceByID =
             "select * from RACE where RACE_ID=";

@@ -74,6 +74,19 @@ public class DBEvent {
         return event;
     }
 
+    public static Long saveOrUpdateEvent (Connection connection, Event event) {
+        //TODO: implement saveOrUpdateEvent
+
+
+        return new Long(-1);
+    }
+
+    public static Long deleteEvent (Connection connection, Long eventID) {
+        //TODO: implement deleteEvent
+
+
+        return new Long(-1);
+    }
 
 
     private static String queryEventByID =

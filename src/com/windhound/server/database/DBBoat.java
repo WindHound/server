@@ -42,6 +42,20 @@ public class DBBoat {
         return competitors;
     }
 
+    public static Long saveOrUpdateBoat (Connection connection, Boat boat) {
+        //TODO: implement saveOrUpdateBoat
+
+
+        return new Long(-1);
+    }
+
+    public static Long deleteBoat (Connection connection, Long boatID) {
+        //TODO: implement deleteBoat
+
+
+        return new Long(-1);
+    }
+
 
     private static String queryBoatByID =
             "select * from BOAT where BOAT_ID=";

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.windhound.server.database.DBManager.executeLoadQuery;
+import static com.windhound.server.database.DBManager.executeSetQuery;
 import static com.windhound.server.database.DBManager.getValueAt;
 import static com.windhound.server.database.DBEvent.loadAdminsByEventTypeAndID;
 
@@ -53,6 +54,30 @@ public class DBChampionship {
         return events;
     }
 
+    private static Long deleteChampionshipAdmins(Connection connection, Long championshipID) {
+        Map<String, String> adminMap = new HashMap<>();
+
+        adminMap.put("stage_id", championshipID.toString());
+        StrSubstitutor adminSub = new StrSubstitutor(adminMap);
+        String finalAdminQuery = adminSub.replace(queryDeleteChampionshipAdmins);
+
+        Long state = DBManager.executeSetQuery(connection, finalAdminQuery);
+
+        return state;
+    }
+
+    private static Long deleteChampionshipEvents(Connection connection, Long championshipID) {
+        Map<String, String> eventMap = new HashMap<>();
+
+        eventMap.put("championship_id", championshipID.toString());
+        StrSubstitutor eventSub = new StrSubstitutor(eventMap);
+        String finalEventQuery = eventSub.replace(queryDeleteChampionshipEventsRelation);
+
+        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
+
+        return state;
+    }
+
     public static Long saveOrUpdateChampionship (Connection connection, Championship championship) {
         Long championshipID = null;
 
@@ -74,20 +99,8 @@ public class DBChampionship {
 
             championshipID = championship.getID();
 
-            //Delete admins
-            adminMap.put("stage_id", championshipID.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryDeleteChampionshipAdmins);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-
-
-            //Delete events
-            eventMap.put("championship_id", championshipID.toString());
-            StrSubstitutor eventSub = new StrSubstitutor(eventMap);
-            String finalEventQuery = eventSub.replace(queryDeleteChampionshipEventsRelation);
-
-            DBManager.executeSetQuery(connection, finalEventQuery);
+            deleteChampionshipAdmins(connection, championshipID);
+            deleteChampionshipEvents(connection, championshipID);
 
         }
         //INSERT
@@ -130,6 +143,18 @@ public class DBChampionship {
         return championshipID;
     }
 
+    public static Long deleteChampionship (Connection connection, Long championshipID) {
+        //Delete CHAMPIONSHIP entry
+        String query = queryDeleteChampionshipByID + championshipID.toString();
+        Long state = DBManager.executeSetQuery(connection, query);
+
+        //Delete relations
+        deleteChampionshipEvents(connection, championshipID);
+        deleteChampionshipAdmins(connection, championshipID);
+
+        return state;
+    }
+
 
 
     private static String queryChampionshipByID =
@@ -162,4 +187,6 @@ public class DBChampionship {
             "INSERT INTO REL_CHAMPIONSHIP_EVENT (CHAMPIONSHIP_ID, EVENT_ID) VALUES (" +
                     "'${championship_id}'                                                  ," +
                     "'${event_id}'                                                         )";
+    private static String queryDeleteChampionshipByID =
+            "DELETE FROM CHAMPIONSHIP WHERE CHAMPIONSHIP_ID=";
 }

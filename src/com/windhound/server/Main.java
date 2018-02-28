@@ -1,5 +1,6 @@
 package com.windhound.server;
 
+import com.windhound.server.database.DBChampionship;
 import com.windhound.server.database.DBManager;
 import com.windhound.server.race.*;
 
@@ -39,11 +40,10 @@ public class Main
         appContext = app.run(args);
         Connection connection = DBManager.getNewConnection();
 
-        Championship c = DBManager.loadChampionshipByID(connection, new Long(25));
-        System.out.println(c.getStartDate().toString());
+//        Championship c = DBManager.loadChampionshipByID(connection, new Long(25));
+//        System.out.println(c.getStartDate().toString());
 
-
-
+        DBChampionship.deleteChampionship(connection, new Long(25));
 
     }
 
