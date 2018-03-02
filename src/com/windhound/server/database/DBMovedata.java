@@ -14,7 +14,6 @@ import java.util.Map;
 public class DBMovedata {
 
     public static Long saveMovedata(Connection connection, MoveData moveData, Long raceID, Long boatID) {
-        //TODO: implement saveMoveData
         Map<String, String> map = new HashMap<>();
         map.put("race_id", String.valueOf(raceID));
         map.put("boat_id", String.valueOf(boatID));
