@@ -3,9 +3,13 @@ package com.windhound.server;
 import com.windhound.server.database.DBBoat;
 import com.windhound.server.database.DBChampionship;
 import com.windhound.server.database.DBManager;
+import com.windhound.server.database.DBMovedata;
+import com.windhound.server.movedata.MoveData;
 import com.windhound.server.race.*;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -41,17 +45,8 @@ public class Main
         appContext = app.run(args);
         Connection connection = DBManager.getNewConnection();
 
-//        Championship c = DBManager.loadChampionshipByID(connection, new Long(25));
-//        System.out.println(c.getStartDate().toString());
-
-//        DBChampionship.deleteChampionship(connection, new Long(25));
-
-        BoatInfo bi = new BoatInfo(new Long(1), "skipperAdam", "class2", "type1");
-        //String query = DBBoat.generateInsertBoatQuery("boatnamehi", bi);
-
-        String query = DBBoat.generateUpdateBoatQuery(new Long(22), "skipperAdam", bi);
-        System.out.println(query);
-
+        List<MoveData> list = DBMovedata.loadMoveDatas(connection, new Long(1), new Long(1));
+        System.out.println(list);
     }
 
     public static void Close()

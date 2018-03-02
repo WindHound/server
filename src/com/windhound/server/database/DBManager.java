@@ -104,7 +104,7 @@ public class DBManager
         return state;
     }
     
-    public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+    private static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         
         Vector<String> columnNames = new Vector<>();

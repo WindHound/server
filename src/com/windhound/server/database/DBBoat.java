@@ -77,7 +77,7 @@ public class DBBoat {
         return query;
     }
 
-    public static String generateUpdateBoatQuery(Long boatID, String boatName, BoatInfo boatInfo) {
+    private static String generateUpdateBoatQuery(Long boatID, String boatName, BoatInfo boatInfo) {
 
         Map<String, String> map = new HashMap<>();
 

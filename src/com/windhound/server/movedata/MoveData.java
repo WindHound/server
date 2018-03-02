@@ -6,6 +6,7 @@ public class MoveData
 {
     private final GPSData               gpsData;
     private final ArrayList<SensorData> sensorDatas;
+    //TODO: need a list of sensordata objects?
 
     public MoveData(GPSData a_gpsData,  ArrayList<SensorData> a_sensorDatas)
     {
