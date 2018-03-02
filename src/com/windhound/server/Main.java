@@ -1,5 +1,6 @@
 package com.windhound.server;
 
+import com.windhound.server.database.DBBoat;
 import com.windhound.server.database.DBChampionship;
 import com.windhound.server.database.DBManager;
 import com.windhound.server.race.*;
@@ -43,7 +44,13 @@ public class Main
 //        Championship c = DBManager.loadChampionshipByID(connection, new Long(25));
 //        System.out.println(c.getStartDate().toString());
 
-        DBChampionship.deleteChampionship(connection, new Long(25));
+//        DBChampionship.deleteChampionship(connection, new Long(25));
+
+        BoatInfo bi = new BoatInfo(new Long(1), "skipperAdam", "class2", "type1");
+        //String query = DBBoat.generateInsertBoatQuery("boatnamehi", bi);
+
+        String query = DBBoat.generateUpdateBoatQuery(new Long(22), "skipperAdam", bi);
+        System.out.println(query);
 
     }
 

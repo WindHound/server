@@ -32,5 +32,7 @@ public class Boat extends ManageableElement<Competitor, Race>
         return boat;
     }
 
-
+    public BoatInfo getBoatInfo() {
+        return info;
+    }
 }
