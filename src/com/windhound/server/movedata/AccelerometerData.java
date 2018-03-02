@@ -12,4 +12,16 @@ public class AccelerometerData
         y = a_y;
         z = a_z;
     }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getZ() {
+        return z;
+    }
 }

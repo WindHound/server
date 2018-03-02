@@ -4,7 +4,7 @@ import com.windhound.server.database.DBBoat;
 import com.windhound.server.database.DBChampionship;
 import com.windhound.server.database.DBManager;
 import com.windhound.server.database.DBMovedata;
-import com.windhound.server.movedata.MoveData;
+import com.windhound.server.movedata.*;
 import com.windhound.server.race.*;
 
 import java.sql.Connection;
@@ -45,8 +45,17 @@ public class Main
         appContext = app.run(args);
         Connection connection = DBManager.getNewConnection();
 
-        List<MoveData> list = DBMovedata.loadMoveDatas(connection, new Long(1), new Long(1));
-        System.out.println(list);
+        GPSData gpsData = new GPSData(101, 101);
+        AccelerometerData accelerometerData = new AccelerometerData(1, 2, 3);
+        GyroscopeData gyroscopeData = new GyroscopeData(4, 5, 6);
+        CompassData compassData = new CompassData(3);
+
+        SensorData sensorData = new SensorData(accelerometerData, gyroscopeData, compassData);
+        ArrayList<SensorData> list = new ArrayList();
+        list.add(sensorData);
+
+        MoveData moveData = new MoveData(gpsData, list);
+        DBMovedata.saveMovedata(connection, moveData, new Long(2), new Long(2));
     }
 
     public static void Close()

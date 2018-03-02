@@ -13,4 +13,12 @@ public class MoveData
         gpsData     = a_gpsData;
         sensorDatas = a_sensorDatas;
     }
+
+    public GPSData getGpsData() {
+        return gpsData;
+    }
+
+    public ArrayList<SensorData> getSensorDatas() {
+        return sensorDatas;
+    }
 }

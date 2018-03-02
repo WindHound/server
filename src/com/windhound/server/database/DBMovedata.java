@@ -13,10 +13,33 @@ import java.util.Map;
 
 public class DBMovedata {
 
-    public static Long saveMovedata(Connection connection, MoveData moveData) {
+    public static Long saveMovedata(Connection connection, MoveData moveData, Long raceID, Long boatID) {
         //TODO: implement saveMoveData
+        Map<String, String> map = new HashMap<>();
+        map.put("race_id", String.valueOf(raceID));
+        map.put("boat_id", String.valueOf(boatID));
 
-        return new Long(-1);
+        map.put("longitude", String.valueOf(moveData.getGpsData().getLongitude()));
+        map.put("latitude", String.valueOf(moveData.getGpsData().getLatitude()));
+
+        //Currently selects first sensor data in list
+        map.put("acc_x", String.valueOf(moveData.getSensorDatas().get(0).accelerometerData.getX()));
+        map.put("acc_y", String.valueOf(moveData.getSensorDatas().get(0).accelerometerData.getY()));
+        map.put("acc_z", String.valueOf(moveData.getSensorDatas().get(0).accelerometerData.getZ()));
+
+        map.put("gyro_x", String.valueOf(moveData.getSensorDatas().get(0).gyroscopeData.getX()));
+        map.put("gyro_y", String.valueOf(moveData.getSensorDatas().get(0).gyroscopeData.getY()));
+        map.put("gyro_z", String.valueOf(moveData.getSensorDatas().get(0).gyroscopeData.getZ()));
+
+        map.put("compass", String.valueOf(moveData.getSensorDatas().get(0).compassData.getAngle()));
+
+
+        StrSubstitutor sub = new StrSubstitutor(map);
+        String query = sub.replace(queryInsertMoveData);
+
+        Long state = DBManager.executeSetQuery(connection, query);
+
+        return state;
     }
 
     public static List<MoveData> loadMoveDatas (Connection connection, Long raceID, Long boatID) {
@@ -64,4 +87,20 @@ public class DBMovedata {
 
     private static String queryLoadMoveData =
             "SELECT * FROM LOCATION WHERE RACE_ID=${race_id} AND BOAT_ID=${boat_id} ORDER BY LOCATION_ID DESC";
+    private static String queryInsertMoveData =
+            "INSERT INTO LOCATION (RACE_ID, BOAT_ID, LATITUDE, LONGITUDE, ACC_X, ACC_Y, ACC_Z, GYRO_X, GYRO_Y," +
+                "GYRO_Z, COMPASS) VALUES (" +
+                "${race_id}, " +
+                "${boat_id}, " +
+                "${longitude}, " +
+                "${latitude}, " +
+                "${acc_x}, " +
+                "${acc_y}, " +
+                "${acc_z}, " +
+                "${gyro_x}, " +
+                "${gyro_y}, " +
+                "${gyro_z}, " +
+                "${compass})";
+
+
 }

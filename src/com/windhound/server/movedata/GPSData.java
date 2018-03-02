@@ -10,4 +10,12 @@ public class GPSData
         latitude  = a_latitude;
         longitude = a_longitude;
     }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
 }
