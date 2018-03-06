@@ -23,13 +23,15 @@ public class DBBoat {
         String name = (String) DBManager.getValueAt(table, 0, "NAME");
 
         HashSet<Long> competitors = loadCompetitorsByBoatID(connection, boatID);
+        HashSet<Long> admins = loadAdminsByBoatID(connection, boatID);
+        HashSet<Long> races = loadRacesByBoatID(connection, boatID);
 
         Boat boat = Boat.createBoat(
                 id,
                 name,
-                new HashSet<>(),
+                admins,
                 competitors,
-                new HashSet<>()
+                races
         );
 
         return boat;
@@ -47,6 +49,34 @@ public class DBBoat {
         }
 
         return competitors;
+    }
+
+    public static HashSet<Long> loadAdminsByBoatID(Connection connection, Long boatID) {
+        JTable table = DBManager.executeLoadQuery(connection, queryAdminsByBoat + boatID);
+
+        HashSet<Long> admins = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal) DBManager.getValueAt(table, i, "USER_ID")).longValue();
+            admins.add(id);
+        }
+
+        return admins;
+    }
+
+    public static HashSet<Long> loadRacesByBoatID(Connection connection, Long boatID) {
+        JTable table = DBManager.executeLoadQuery(connection, queryRelationRacesByBoat + boatID);
+
+        HashSet<Long> races = new HashSet<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal) DBManager.getValueAt(table, i, "RACE_ID")).longValue();
+            races.add(id);
+        }
+
+        return races;
     }
 
     private static String generateInsertBoatQuery(String boatName, BoatInfo boatInfo) {
@@ -235,7 +265,11 @@ public class DBBoat {
     private static String queryBoatByID =
             "select * from BOAT where BOAT_ID=";
     private static String queryRelationCompetitorsByBoat =
-            "select * from REL_BOAT_USER where USER_ID=";
+            "select * from REL_BOAT_USER where BOAT_ID=";
+    private static String queryRelationRacesByBoat =
+            "SELECT * FROM REL_RACE_BOAT WHERE BOAT_ID=";
+    private static String queryAdminsByBoat =
+            "SELECT * FROM ADMINS WHERE STAGE_TYPE='Boat' AND STAGE_ID=";
 
     private static String queryInsertBoatAdmins =
             "INSERT INTO ADMINS (USER_ID, STAGE_ID, STAGE_TYPE) VALUES (" +

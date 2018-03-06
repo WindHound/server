@@ -84,7 +84,6 @@ public class DBEvent {
         return event;
     }
 
-
     private static Long deleteEventAdmins(Connection connection, Long eventID) {
         Map<String, String> eventMap = new HashMap<>();
 
