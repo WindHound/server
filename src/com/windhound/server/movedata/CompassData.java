@@ -8,4 +8,8 @@ public class CompassData
     {
         angle = a_angle;
     }
+
+    public float getAngle() {
+        return angle;
+    }
 }

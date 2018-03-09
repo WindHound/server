@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import com.windhound.server.DBManager;
+import com.windhound.server.database.DBManager;
 
 import org.springframework.core.GenericTypeResolver;
 
@@ -43,7 +43,7 @@ public abstract class StructureElement<S extends StructureElement, M extends Str
             S subordinate = (S)StructureManager.getStructure(subordinateType, subordinateId);
             if (subordinate == null)
             {
-                subordinate = (S)DBManager.loadStructureElement(subordinateType, subordinateId);
+                subordinate = (S) DBManager.loadStructureElement(subordinateType, subordinateId);
                 subordinate.loadStructure();
             }
         }
@@ -54,7 +54,7 @@ public abstract class StructureElement<S extends StructureElement, M extends Str
             M manager = (M)StructureManager.getStructure(managerType, managerId);
             if (manager == null)
             {
-                manager = (M)DBManager.loadStructureElement(managerType, managerId);
+                manager = (M) DBManager.loadStructureElement(managerType, managerId);
                 manager.loadStructure();
             }
         }

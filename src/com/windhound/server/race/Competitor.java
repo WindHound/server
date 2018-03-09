@@ -10,7 +10,7 @@ public class Competitor extends StructureElement<Competitor,  Boat>
     {
         super(a_id, a_name, new HashSet<>(), a_boats);
     }
-
+/*
     public static Competitor createCompetitor(Long          a_id,
                                               String        a_name,
                                               HashSet<Long> a_boats)
@@ -25,4 +25,5 @@ public class Competitor extends StructureElement<Competitor,  Boat>
 
         return competitor;
     }
+    */
 }

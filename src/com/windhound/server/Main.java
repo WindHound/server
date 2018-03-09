@@ -1,15 +1,21 @@
 package com.windhound.server;
 
+import com.windhound.server.database.DBBoat;
+import com.windhound.server.database.DBChampionship;
+import com.windhound.server.database.DBManager;
+import com.windhound.server.database.DBMovedata;
+import com.windhound.server.movedata.*;
 import com.windhound.server.race.*;
 
-import java.util.HashSet;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-
 
 @SpringBootApplication
 public class Main
@@ -37,12 +43,6 @@ public class Main
         app.setDefaultProperties(myProps);
 
         appContext = app.run(args);
-
-        /*
-        Championship championship = DBManager.loadChampionship(new Long(1));
-        championship.loadStructureElement();
-        StructureManager.saveOrUpdateBoat(null);
-        */
     }
 
     public static void Close()

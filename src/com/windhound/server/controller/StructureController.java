@@ -1,11 +1,13 @@
 package com.windhound.server.controller;
 
-import com.windhound.server.DBManager;
 import com.windhound.server.race.*;
+import com.windhound.server.database.DBManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.TimeZone;
 
 @RestController
 public class StructureController
@@ -21,18 +23,28 @@ public class StructureController
 
     @CrossOrigin
     @PostMapping("/structure/add/championship/")
-    public String addChampionship(@RequestParam(value = "id")             Long       id,
-                                  @RequestParam(value = "name")           String     name,
+    public String addChampionship(@RequestParam(value = "id")             Long id,
+                                  @RequestParam(value = "name")           String name,
+                                  @RequestParam(value = "startDate")      Long startDateMilli,
+                                  @RequestParam(value = "endDate")        Long endDateMilli,
                                   @RequestParam(value = "admins[]")       List<Long> admins,
                                   @RequestParam(value = "subordinates[]") List<Long> subordinates)
     {
+        Calendar startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar endDate   = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        startDate.setTimeInMillis(startDateMilli);
+        endDate.setTimeInMillis(endDateMilli);
+
         Championship championship = new Championship(
                 id,
                 name,
+                startDate,
+                endDate,
                 new HashSet<>(admins),
                 new HashSet<>(subordinates)
         );
-        StructureManager.saveOrUpdateChampionship(championship);
+
+        DBManager.saveOrUpdateStructureElement(Championship.class, championship);
 
         return "accept";
     }
@@ -42,6 +54,7 @@ public class StructureController
     {
         return StructureManager.getOrLoadChampionship(id);
     }
+
     //
     // Events
     //
@@ -53,20 +66,30 @@ public class StructureController
 
     @CrossOrigin
     @PostMapping("/structure/add/event/")
-    public String addEvent(@RequestParam(value = "id")             Long       id,
-                           @RequestParam(value = "name")           String     name,
+    public String addEvent(@RequestParam(value = "id")             Long id,
+                           @RequestParam(value = "name")           String name,
+                           @RequestParam(value = "startDate")      Long startDateMilli,
+                           @RequestParam(value = "endDate")        Long endDateMilli,
                            @RequestParam(value = "admins[]")       List<Long> admins,
                            @RequestParam(value = "subordinates[]") List<Long> subordinates,
                            @RequestParam(value = "managers[]")     List<Long> managers)
     {
+        Calendar startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar endDate   = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        startDate.setTimeInMillis(startDateMilli);
+        endDate.setTimeInMillis(endDateMilli);
+
         Event event = new Event(
                 id,
                 name,
+                startDate,
+                endDate,
                 new HashSet<>(admins),
                 new HashSet<>(subordinates),
                 new HashSet<>(managers)
         );
-        StructureManager.saveOrUpdateEvent(event);
+
+        DBManager.saveOrUpdateStructureElement(Event.class, event);
 
         return "accept";
     }
@@ -76,6 +99,7 @@ public class StructureController
     {
         return StructureManager.getOrLoadEvent(id);
     }
+
     //
     // Races
     //
@@ -87,20 +111,30 @@ public class StructureController
 
     @CrossOrigin
     @PostMapping("/structure/add/race/")
-    public String addRace(@RequestParam(value = "id")             Long       id,
-                          @RequestParam(value = "name")           String     name,
+    public String addRace(@RequestParam(value = "id")             Long id,
+                          @RequestParam(value = "name")           String name,
+                          @RequestParam(value = "startDate")      Long startDateMilli,
+                          @RequestParam(value = "endDate")        Long endDateMilli,
                           @RequestParam(value = "admins[]")       List<Long> admins,
                           @RequestParam(value = "subordinates[]") List<Long> subordinates,
                           @RequestParam(value = "managers[]")     List<Long> managers)
     {
+        Calendar startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar endDate   = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        startDate.setTimeInMillis(startDateMilli);
+        endDate.setTimeInMillis(endDateMilli);
+
         Race race = new Race(
                 id,
                 name,
+                startDate,
+                endDate,
                 new HashSet<>(admins),
                 new HashSet<>(subordinates),
                 new HashSet<>(managers)
         );
-        StructureManager.saveOrUpdateRace(race);
+
+        DBManager.saveOrUpdateStructureElement(Race.class, race);
 
         return "accept";
     }
@@ -110,22 +144,25 @@ public class StructureController
     {
         return StructureManager.getOrLoadRace(id);
     }
+
     //
     // Boats
     //
+    //TODO
+    /*
     @RequestMapping("/structure/all/boat/")
     public Long[] getAllBoat()
     {
         return DBManager.loadAllBoats();
     }
-
+    */
     @CrossOrigin
     @PostMapping("/structure/add/boat/")
-    public String addBoat(@RequestParam(value = "id")             Long       id,
-                          @RequestParam(value = "name")           String     name,
-                          @RequestParam(value = "admins[]")       List<Long> admins,
+    public String addBoat(@RequestParam(value = "id") Long id,
+                          @RequestParam(value = "name") String name,
+                          @RequestParam(value = "admins[]") List<Long> admins,
                           @RequestParam(value = "subordinates[]") List<Long> subordinates,
-                          @RequestParam(value = "managers[]")     List<Long> managers)
+                          @RequestParam(value = "managers[]") List<Long> managers)
     {
         Boat boat = new Boat(
                 id,
@@ -134,7 +171,8 @@ public class StructureController
                 new HashSet<>(subordinates),
                 new HashSet<>(managers)
         );
-        StructureManager.saveOrUpdateBoat(boat);
+
+        DBManager.saveOrUpdateStructureElement(Boat.class, boat);
 
         return "accept";
     }
@@ -144,13 +182,15 @@ public class StructureController
     {
         return StructureManager.getOrLoadBoat(id);
     }
+
     //
     // Competitors
     //
+    /*
     @CrossOrigin
     @PostMapping("/structure/add/competitor/")
-    public String addCompetitor(@RequestParam(value = "id")         Long       id,
-                                @RequestParam(value = "name")       String     name,
+    public String addCompetitor(@RequestParam(value = "id") Long id,
+                                @RequestParam(value = "name") String name,
                                 @RequestParam(value = "managers[]") List<Long> managers)
     {
         Competitor competitor = new Competitor(
@@ -162,7 +202,8 @@ public class StructureController
 
         return "accept";
     }
-    
+    */
+
     @RequestMapping("/structure/get/competitor/{id}")
     public Competitor getCompetitor(@PathVariable Long id)
     {

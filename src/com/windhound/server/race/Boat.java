@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public class Boat extends ManageableElement<Competitor, Race>
 {
-    //private BoatInfo info;
+    private BoatInfo info;
 
     public Boat(Long          a_id,
                  String        a_name,
@@ -14,7 +14,7 @@ public class Boat extends ManageableElement<Competitor, Race>
     {
         super(a_id, a_name, a_admins, a_competitors, a_races);
     }
-
+/*
     public static Boat createBoat(Long          a_id,
                                   String        a_name,
                                   HashSet<Long> a_admins,
@@ -30,5 +30,9 @@ public class Boat extends ManageableElement<Competitor, Race>
             throw new ExceptionInInitializerError("Boat already exists");
 
         return boat;
+    }
+*/
+    public BoatInfo getBoatInfo() {
+        return info;
     }
 }
