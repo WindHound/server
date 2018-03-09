@@ -225,7 +225,7 @@ public class DBBoat
         return races;
     }
 
-    private static Long deleteBoatAdmins(Connection connection, Long boatID)
+    private static void deleteBoatAdmins(Connection connection, Long boatID)
     {
         Map<String, String> map = new HashMap<>();
 
@@ -233,12 +233,10 @@ public class DBBoat
         StrSubstitutor eventSub = new StrSubstitutor(map);
         String finalEventQuery = eventSub.replace(queryDeleteBoatAdminRelations);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    private static Long deleteBoatCompetitors(Connection connection, Long boatID)
+    private static void deleteBoatCompetitors(Connection connection, Long boatID)
     {
         Map<String, String> map = new HashMap<>();
 
@@ -246,12 +244,10 @@ public class DBBoat
         StrSubstitutor eventSub = new StrSubstitutor(map);
         String finalEventQuery = eventSub.replace(queryDeleteBoatCompetitorRelations);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    private static Long deleteBoatRaces(Connection connection, Long boatID)
+    private static void deleteBoatRaces(Connection connection, Long boatID)
     {
         Map<String, String> map = new HashMap<>();
 
@@ -259,21 +255,17 @@ public class DBBoat
         StrSubstitutor eventSub = new StrSubstitutor(map);
         String finalEventQuery = eventSub.replace(queryDeleteBoatRaceRelations);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    public static Long deleteBoat(Connection connection, Long boatID)
+    public static void deleteBoat(Connection connection, Long boatID)
     {
         String query = queryDeleteBoatByID + boatID.toString();
-        Long state = DBManager.executeSetQuery(connection, query);
+        DBManager.executeSetQuery(connection, query);
 
         deleteBoatAdmins(connection, boatID);
         deleteBoatCompetitors(connection, boatID);
         deleteBoatRaces(connection, boatID);
-
-        return state;
     }
 
     //

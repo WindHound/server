@@ -14,7 +14,7 @@ import java.util.Map;
 public class DBMovedata
 {
 
-    public static Long saveMovedata(Connection connection, MoveData moveData, Long raceID, Long boatID)
+    public static void saveMovedata(Connection connection, MoveData moveData, Long raceID, Long boatID)
     {
         Map<String, String> map = new HashMap<>();
         map.put("race_id", String.valueOf(raceID));
@@ -38,9 +38,7 @@ public class DBMovedata
         StrSubstitutor sub = new StrSubstitutor(map);
         String query = sub.replace(queryInsertMoveData);
 
-        Long state = DBManager.executeSetQuery(connection, query);
-
-        return state;
+        DBManager.executeSetQuery(connection, query);
     }
 
     public static List<MoveData> loadMoveDatas(Connection connection, Long raceID, Long boatID)

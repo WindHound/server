@@ -142,17 +142,15 @@ public class DBRace
         return raceID;
     }
 
-    public static Long deleteRace(Connection connection, Long raceID)
+    public static void deleteRace(Connection connection, Long raceID)
     {
         String query = queryDeleteRaceByID + raceID.toString();
-        Long state = DBManager.executeSetQuery(connection, query);
+        DBManager.executeSetQuery(connection, query);
 
 
         deleteRaceAdmins(connection, raceID);
         deleteRaceBoats(connection, raceID);
         deleteRaceEvents(connection, raceID);
-
-        return state;
     }
 
     private static HashSet<Long> loadBoatsByRaceID(Connection connection, Long raceID)
@@ -185,7 +183,7 @@ public class DBRace
         return events;
     }
 
-    private static Long deleteRaceEvents(Connection connection, Long raceID)
+    private static void deleteRaceEvents(Connection connection, Long raceID)
     {
         Map<String, String> map = new HashMap<>();
 
@@ -193,12 +191,10 @@ public class DBRace
         StrSubstitutor eventSub = new StrSubstitutor(map);
         String finalEventQuery = eventSub.replace(queryDeleteRaceEventRelation);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    private static Long deleteRaceBoats(Connection connection, Long raceID)
+    private static void deleteRaceBoats(Connection connection, Long raceID)
     {
         Map<String, String> map = new HashMap<>();
 
@@ -206,12 +202,10 @@ public class DBRace
         StrSubstitutor eventSub = new StrSubstitutor(map);
         String finalEventQuery = eventSub.replace(queryDeleteRaceBoatRelation);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    private static Long deleteRaceAdmins(Connection connection, Long raceID)
+    private static void deleteRaceAdmins(Connection connection, Long raceID)
     {
         Map<String, String> map = new HashMap<>();
 
@@ -219,9 +213,7 @@ public class DBRace
         StrSubstitutor eventSub = new StrSubstitutor(map);
         String finalEventQuery = eventSub.replace(queryDeleteRaceAdminRelation);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
     //
@@ -235,22 +227,22 @@ public class DBRace
             "select * from REL_EVENT_RACE where RACE_ID=";
 
     private static String queryInsertRace =
-            "INSERT INTO RACE (NAME, START_TIME, END_TIME) VALUES (" +
-                    "'${name}'," +
+            "INSERT INTO RACE (NAME, START_TIME, END_TIME) VALUES             (" +
+                    "'${name}'                                                ," +
                     "TO_TIMESTAMP('${start_time}', 'YYYY-MM-DD HH24:MI:SS.FF')," +
-                    "TO_TIMESTAMP('${end_time}', 'YYYY-MM-DD HH24:MI:SS.FF'))";
+                    "TO_TIMESTAMP('${end_time}', 'YYYY-MM-DD HH24:MI:SS.FF'))  ";
     private static String queryUpdateRace =
-            "UPDATE RACE SET " +
-                    "NAME='${name}'," +
+            "UPDATE RACE SET                                                              " +
+                    "NAME='${name}'                                                      ," +
                     "START_TIME=TO_TIMESTAMP('${start_time}', 'YYYY-MM-DD HH24:MI:SS.FF')," +
-                    "END_TIME=TO_TIMESTAMP('${end_time}', 'YYYY-M;M-DD HH24:MI:SS.FF'))";
+                    "END_TIME=TO_TIMESTAMP('${end_time}', 'YYYY-M;M-DD HH24:MI:SS.FF'))   ";
     private static String queryLatestRaceByName =
             "SELECT (RACE_ID) FROM RACE WHERE NAME='${name}' ORDER BY RACE_ID DESC";
     private static String queryInsertRaceAdmins =
             "INSERT INTO ADMINS (USER_ID, STAGE_TYPE, STAGE_ID) VALUES (" +
-                    "'${user_id}'                                              ," +
+                    "'${user_id}'                                      ," +
                     "'Race'                                            ," +
-                    "'${stage_id}'                                             )";
+                    "'${stage_id}'                                     )";
     private static String queryInsertRaceBoats =
             "INSERT INTO REL_RACE_BOAT (RACE_ID, BOAT_ID) VALUES (" +
                     "${race_id}," +

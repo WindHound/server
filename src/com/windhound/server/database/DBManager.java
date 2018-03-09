@@ -34,7 +34,7 @@ public class DBManager
             password = prop.getProperty("password");
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Could not read from config.properties file. Make sure the file is under /resources and that it is complete.");
             System.exit(1);
         }
     }
@@ -67,7 +67,7 @@ public class DBManager
 
         } catch (Exception e)
         {
-            System.out.println(e);
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -83,18 +83,17 @@ public class DBManager
         return table;
     }
 
-    static Long executeSetQuery(Connection connection, String queryString)
+    static int executeSetQuery(Connection connection, String queryString)
     {
-        Long state = new Long(1);
+        int state = 0;
 
         try
         {
             Statement stmt = connection.createStatement();
-            stmt.executeQuery(queryString);
+            state = stmt.executeUpdate(queryString);
         } catch (Exception e)
         {
-            state = new Long(-1);
-            System.out.println(e);
+            e.printStackTrace();
             System.exit(1);
         }
 

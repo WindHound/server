@@ -142,16 +142,14 @@ public class DBEvent
         return eventID;
     }
 
-    public static Long deleteEvent(Connection connection, Long eventID)
+    public static void deleteEvent(Connection connection, Long eventID)
     {
         String query = queryDeleteEventByID + eventID.toString();
-        Long state = DBManager.executeSetQuery(connection, query);
+        DBManager.executeSetQuery(connection, query);
 
         deleteEventAdmins(connection, eventID);
         deleteEventChampionships(connection, eventID);
         deleteEventRaces(connection, eventID);
-
-        return new Long(-1);
     }
 
     public static HashSet<Long> loadAdminsByEventTypeAndID(Connection connection, String stageType, Long stageID)
@@ -201,7 +199,7 @@ public class DBEvent
         return races;
     }
 
-    private static Long deleteEventAdmins(Connection connection, Long eventID)
+    private static void deleteEventAdmins(Connection connection, Long eventID)
     {
         Map<String, String> eventMap = new HashMap<>();
 
@@ -209,12 +207,10 @@ public class DBEvent
         StrSubstitutor eventSub = new StrSubstitutor(eventMap);
         String finalEventQuery = eventSub.replace(queryDeleteEventAdminRelation);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    private static Long deleteEventRaces(Connection connection, Long eventID)
+    private static void deleteEventRaces(Connection connection, Long eventID)
     {
         Map<String, String> eventMap = new HashMap<>();
 
@@ -222,12 +218,10 @@ public class DBEvent
         StrSubstitutor eventSub = new StrSubstitutor(eventMap);
         String finalEventQuery = eventSub.replace(queryDeleteEventRaceRelation);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
-    private static Long deleteEventChampionships(Connection connection, Long eventID)
+    private static void deleteEventChampionships(Connection connection, Long eventID)
     {
         Map<String, String> eventMap = new HashMap<>();
 
@@ -235,9 +229,7 @@ public class DBEvent
         StrSubstitutor eventSub = new StrSubstitutor(eventMap);
         String finalEventQuery = eventSub.replace(queryDeleteEventChampionshipRelation);
 
-        Long state = DBManager.executeSetQuery(connection, finalEventQuery);
-
-        return state;
+        DBManager.executeSetQuery(connection, finalEventQuery);
     }
 
     //
