@@ -148,14 +148,12 @@ public class StructureController
     //
     // Boats
     //
-    //TODO
-    /*
     @RequestMapping("/structure/boat/all/")
     public Long[] getAllBoats()
     {
         return DBManager.loadAllBoats();
     }
-    */
+
     @CrossOrigin
     @PostMapping("/structure/boat/add/")
     public String addBoat(@RequestParam(value = "id") Long id,
