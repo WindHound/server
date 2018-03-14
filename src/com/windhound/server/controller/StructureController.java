@@ -16,7 +16,7 @@ public class StructureController
     // Championships
     //
     @RequestMapping("/structure/championship/all/")
-    public Long[] getAllChampionship()
+    public Long[] getAllChampionships()
     {
         return DBManager.loadAllChampionships();
     }
@@ -44,9 +44,9 @@ public class StructureController
                 new HashSet<>(subordinates)
         );
 
-        DBManager.saveOrUpdateStructureElement(Championship.class, championship);
+        Long newID = DBManager.saveOrUpdateStructureElement(Championship.class, championship);
 
-        return "accept";
+        return newID.toString();
     }
 
     @RequestMapping("/structure/championship/get/{id}")
@@ -59,7 +59,7 @@ public class StructureController
     // Events
     //
     @RequestMapping("/structure/event/all/")
-    public Long[] getAllEvent()
+    public Long[] getAllEvents()
     {
         return DBManager.loadAllEvents();
     }
@@ -89,9 +89,9 @@ public class StructureController
                 new HashSet<>(managers)
         );
 
-        DBManager.saveOrUpdateStructureElement(Event.class, event);
+        Long newID = DBManager.saveOrUpdateStructureElement(Event.class, event);
 
-        return "accept";
+        return newID.toString();
     }
 
     @RequestMapping("/structure/event/get/{id}")
@@ -104,7 +104,7 @@ public class StructureController
     // Races
     //
     @RequestMapping("/structure/race/all/")
-    public Long[] getAllRace()
+    public Long[] getAllRaces()
     {
         return DBManager.loadAllRaces();
     }
@@ -134,9 +134,9 @@ public class StructureController
                 new HashSet<>(managers)
         );
 
-        DBManager.saveOrUpdateStructureElement(Race.class, race);
+        Long newID = DBManager.saveOrUpdateStructureElement(Race.class, race);
 
-        return "accept";
+        return newID.toString();
     }
 
     @RequestMapping("/structure/race/get/{id}")
@@ -150,8 +150,8 @@ public class StructureController
     //
     //TODO
     /*
-    @RequestMapping("/structure/all/boat/")
-    public Long[] getAllBoat()
+    @RequestMapping("/structure/boat/all/")
+    public Long[] getAllBoats()
     {
         return DBManager.loadAllBoats();
     }
@@ -172,9 +172,9 @@ public class StructureController
                 new HashSet<>(managers)
         );
 
-        DBManager.saveOrUpdateStructureElement(Boat.class, boat);
+        Long newID = DBManager.saveOrUpdateStructureElement(Boat.class, boat);
 
-        return "accept";
+        return newID.toString();
     }
 
     @RequestMapping("/structure/boat/get/{id}")
@@ -203,10 +203,10 @@ public class StructureController
         return "accept";
     }
     */
-
+    /*
     @RequestMapping("/structure/competitor/get/{id}")
     public Competitor getCompetitor(@PathVariable Long id)
     {
         return StructureManager.getOrLoadCompetitor(id);
-    }
+    }*/
 }

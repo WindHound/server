@@ -155,6 +155,14 @@ public class DBManager
         return loadAllRaces(connection);
     }
 
+    // TODO
+    /*
+    public static Long[] loadAllBoats()
+    {
+        Connection connection = getNewConnection();
+        return loadAllBoats(connection);
+    }
+    */
     public static StructureElement loadStructureElement(Class type, Long id)
     {
         Connection connection = getNewConnection();
@@ -212,6 +220,23 @@ public class DBManager
         return races.toArray(new Long[races.size()]);
     }
 
+    //TODO
+    /*
+    public static Long[] loadAllBoats(Connection connection)
+    {
+        JTable table = executeLoadQuery(connection, queryAllBoats);
+
+        ArrayList<Long> boats = new ArrayList<>();
+
+        for (int i = 0; i < table.getRowCount(); ++i)
+        {
+            Long id = ((BigDecimal) getValueAt(table, i, "RACE_ID")).longValue();
+            boats.add(id);
+        }
+
+        return boats.toArray(new Long[boats.size()]);
+    }*/
+
     public static StructureElement loadStructureElement(Connection connection, Class type, Long id)
     {
         if (type == Championship.class)
@@ -253,4 +278,6 @@ public class DBManager
             "select (EVENT_ID) from EVENT";
     private static String queryAllRaces =
             "select (RACE_ID) from RACE";
+    private static String queryAllBoats =
+            "select (BOAT_ID) from BOATS";
 }
