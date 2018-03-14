@@ -12,11 +12,11 @@ import java.util.*;
 
 import static com.windhound.server.database.DBManager.executeLoadQuery;
 import static com.windhound.server.database.DBManager.getValueAt;
-import static com.windhound.server.database.DBEvent.loadAdminsByEventTypeAndID;
+import static com.windhound.server.database.DBAdmin.loadAdminsByEventTypeAndID;
 import static com.windhound.server.database.DBRelation.addChampionshipEventRelations;
 import static com.windhound.server.database.DBRelation.deleteAllChampionshipEventRelations;
 import static com.windhound.server.database.DBAdmin.addChampionshipAdmins;
-import static com.windhound.server.database.DBAdmin.deleteChampionshipAdmins;
+import static com.windhound.server.database.DBAdmin.deleteAllChampionshipAdmins;
 
 public class DBChampionship
 {
@@ -72,6 +72,7 @@ public class DBChampionship
         valuesMap.put("start_date", startDateString);
         valuesMap.put("end_date", endDateString);
 
+        // TODO move "sub" after valuesMap.put(id)
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
         //UPDATE
@@ -83,7 +84,7 @@ public class DBChampionship
 
             championshipID = championship.getID();
 
-            deleteChampionshipAdmins(connection, championshipID);
+            deleteAllChampionshipAdmins(connection, championshipID);
             deleteAllChampionshipEventRelations(connection, championshipID);
         }
         //INSERT
@@ -99,11 +100,11 @@ public class DBChampionship
         }
 
         //Save admins
-        Long[] adminIDs = (Long[])championship.getAdmins().toArray();
+        Long[] adminIDs = championship.getAdmins().toArray(new Long[0]);
         addChampionshipAdmins(connection, championshipID, adminIDs);
 
         //Save events
-        Long[] eventIDs = (Long[])championship.getSubordinates().toArray();
+        Long[] eventIDs = championship.getSubordinates().toArray(new Long[0]);
         addChampionshipEventRelations(connection, championshipID, eventIDs);
 
         return championshipID;
@@ -117,7 +118,7 @@ public class DBChampionship
 
         //Delete relations
         deleteAllChampionshipEventRelations(connection, championshipID);
-        deleteChampionshipAdmins(connection, championshipID);
+        deleteAllChampionshipAdmins(connection, championshipID);
     }
 
     private static HashSet<Long> loadEventsByChampionshipID(Connection connection, Long championshipID)
@@ -151,7 +152,7 @@ public class DBChampionship
             "UPDATE CHAMPIONSHIP SET                                                       " +
                     "NAME='${name}',                                                       " +
                     "START_TIME=TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF'), " +
-                    "END_TIME=TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF')    " +
+                    "END_TIME=TO_TIMESTAMP('${end_date}', 'YYYY-MM-DD HH24:MI:SS.FF')      " +
                     "WHERE CHAMPIONSHIP_ID=${id}                                           ";
     private static String queryLatestChampionshipByName =
             "SELECT (CHAMPIONSHIP_ID) FROM CHAMPIONSHIP WHERE NAME='${name}' ORDER BY CHAMPIONSHIP_ID DESC";

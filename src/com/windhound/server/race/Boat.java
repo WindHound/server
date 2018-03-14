@@ -7,10 +7,10 @@ public class Boat extends ManageableElement<Competitor, Race>
     private BoatInfo info;
 
     public Boat(Long          a_id,
-                 String        a_name,
-                 HashSet<Long> a_admins,
-                 HashSet<Long> a_competitors,
-                 HashSet<Long> a_races)
+                String        a_name,
+                HashSet<Long> a_admins,
+                HashSet<Long> a_competitors,
+                HashSet<Long> a_races)
     {
         super(a_id, a_name, a_admins, a_competitors, a_races);
     }

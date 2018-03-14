@@ -9,10 +9,15 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import static com.windhound.server.database.DBManager.executeLoadQuery;
+import static com.windhound.server.database.DBAdmin.addBoatAdmins;
+import static com.windhound.server.database.DBAdmin.deleteAllBoatAdmins;
+import static com.windhound.server.database.DBRelation.addBoatRaceRelations;
+import static com.windhound.server.database.DBRelation.deleteAllBoatRaceRelations;
+import static com.windhound.server.database.DBRelation.addBoatCompetitorRelations;
+import static com.windhound.server.database.DBRelation.deleteAllBoatCompetitorRelations;
 
 public class DBBoat
 {
@@ -104,32 +109,32 @@ public class DBBoat
         Long boatID = null;
 
         Map<String, String> valuesMap = new HashMap<>();
-        Map<String, String> adminMap = new HashMap<>();
-        Map<String, String> competitorsMap = new HashMap<>();
-        Map<String, String> racesMap = new HashMap<>();
-
 
         valuesMap.put("name", boat.getName());
 
+        // TODO move "sub" after valuesMap.put(id)
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
         //UPDATE
         if (boat.getID() != null)
         {
-            //valuesMap.put("id", boat.getID().toString());
-            String finalQuery = generateUpdateBoatQuery(boat.getID(), boat.getName(), boat.getBoatInfo());
+            valuesMap.put("id", boat.getID().toString());
+
+            //String finalQuery = generateUpdateBoatQuery(boat.getID(), boat.getName(), boat.getBoatInfo());
+            String finalQuery = sub.replace(queryUpdateBoat);
             DBManager.executeSetQuery(connection, finalQuery);
 
             boatID = boat.getID();
 
-            deleteBoatAdmins(connection, boatID);
-            deleteBoatCompetitors(connection, boatID);
-            deleteBoatRaces(connection, boatID);
+            deleteAllBoatAdmins(connection, boatID);
+            deleteAllBoatRaceRelations(connection, boatID);
+            deleteAllBoatCompetitorRelations(connection, boatID);
         }
         //INSERT
         else
         {
-            String finalQuery = generateInsertBoatQuery(boat.getName(), boat.getBoatInfo());
+            //String finalQuery = generateInsertBoatQuery(boat.getName(), boat.getBoatInfo());
+            String finalQuery = sub.replace(queryInsertBoat);
             DBManager.executeSetQuery(connection, finalQuery);
 
             String idQuery = sub.replace(queryLatestBoatByName);
@@ -138,44 +143,16 @@ public class DBBoat
         }
 
         //Save admins
-        List<Long> admins = boat.getAdmins();
-        adminMap.put("boat_id", boatID.toString());
-
-        for (Long admin : admins)
-        {
-            adminMap.put("user_id", admin.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryInsertBoatAdmins);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-        }
-
-        //Save competitors
-        List<Long> competitors = boat.getAdmins();
-        competitorsMap.put("boat_id", boatID.toString());
-
-        for (Long competitor : competitors)
-        {
-            competitorsMap.put("user_id", competitor.toString());
-            StrSubstitutor compSub = new StrSubstitutor(competitorsMap);
-            String finalAdminQuery = compSub.replace(queryInsertBoatCompetitors);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-        }
+        Long[] adminIDs = boat.getAdmins().toArray(new Long[0]);
+        addBoatAdmins(connection, boatID, adminIDs);
 
         //Save races
-        List<Long> races = boat.getAdmins();
-        racesMap.put("boat_id", boatID.toString());
+        Long[] raceIDs = boat.getManagers().toArray(new Long[0]);
+        addBoatRaceRelations(connection, boatID, raceIDs);
 
-        for (Long race : races)
-        {
-            racesMap.put("race_id", race.toString());
-            StrSubstitutor raceSub = new StrSubstitutor(racesMap);
-            String finalAdminQuery = raceSub.replace(queryInsertBoatRaces);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-        }
-
+        //Save competitors
+        Long[] competitorIDs = boat.getSubordinates().toArray(new Long[0]);
+        addBoatCompetitorRelations(connection, boatID, competitorIDs);
 
         return boatID;
     }
@@ -225,47 +202,14 @@ public class DBBoat
         return races;
     }
 
-    private static void deleteBoatAdmins(Connection connection, Long boatID)
-    {
-        Map<String, String> map = new HashMap<>();
-
-        map.put("boat_id", boatID.toString());
-        StrSubstitutor eventSub = new StrSubstitutor(map);
-        String finalEventQuery = eventSub.replace(queryDeleteBoatAdminRelations);
-
-        DBManager.executeSetQuery(connection, finalEventQuery);
-    }
-
-    private static void deleteBoatCompetitors(Connection connection, Long boatID)
-    {
-        Map<String, String> map = new HashMap<>();
-
-        map.put("boat_id", boatID.toString());
-        StrSubstitutor eventSub = new StrSubstitutor(map);
-        String finalEventQuery = eventSub.replace(queryDeleteBoatCompetitorRelations);
-
-        DBManager.executeSetQuery(connection, finalEventQuery);
-    }
-
-    private static void deleteBoatRaces(Connection connection, Long boatID)
-    {
-        Map<String, String> map = new HashMap<>();
-
-        map.put("boat_id", boatID.toString());
-        StrSubstitutor eventSub = new StrSubstitutor(map);
-        String finalEventQuery = eventSub.replace(queryDeleteBoatRaceRelations);
-
-        DBManager.executeSetQuery(connection, finalEventQuery);
-    }
-
     public static void deleteBoat(Connection connection, Long boatID)
     {
         String query = queryDeleteBoatByID + boatID.toString();
         DBManager.executeSetQuery(connection, query);
 
-        deleteBoatAdmins(connection, boatID);
-        deleteBoatCompetitors(connection, boatID);
-        deleteBoatRaces(connection, boatID);
+        deleteAllBoatAdmins(connection, boatID);
+        deleteAllBoatRaceRelations(connection, boatID);
+        deleteAllBoatCompetitorRelations(connection, boatID);
     }
 
     //
@@ -279,32 +223,18 @@ public class DBBoat
             "SELECT * FROM REL_RACE_BOAT WHERE BOAT_ID=";
     private static String queryAdminsByBoat =
             "SELECT * FROM ADMINS WHERE STAGE_TYPE='Boat' AND STAGE_ID=";
-
-    private static String queryInsertBoatAdmins =
-            "INSERT INTO ADMINS (USER_ID, STAGE_ID, STAGE_TYPE) VALUES (" +
-                    "'${user_id}'," +
-                    "'${boat_id}'," +
-                    "'Boat')";
-    private static String queryInsertBoatCompetitors =
-            "INSERT INTO REL_BOAT_USER (BOAT_ID, USER_ID) VALUES (" +
-                    "'${boat_id}'," +
-                    "'${user_id}')";
-    private static String queryInsertBoatRaces =
-            "INSERT INTO REL_RACE_BOAT (RACE_ID, BOAT_ID) VALUES (" +
-                    "'${race_id}'," +
-                    "'${boat_id}')";
     private static String queryLatestBoatByName =
             "SELECT (BOAT_ID) FROM BOATS WHERE NAME='${name}' ORDER BY BOAT_ID DESC";
-    private static String queryDeleteBoatAdminRelations =
-            "DELETE FROM ADMINS WHERE STAGE_ID='${boat_id}' AND STAGE_TYPE='Boat'";
-    private static String queryDeleteBoatRaceRelations =
-            "DELETE FROM REL_RACE_BOAT WHERE BOAT_ID='${boat_id}'";
-    private static String queryDeleteBoatCompetitorRelations =
-            "DELETE FROM REL_BOAT_USER WHERE BOAT_ID='${boat_id}'";
     private static String queryDeleteBoatByID =
-            "DELETE FROM BOAT WHERE BOAT_ID=";
-
+            "DELETE FROM BOATS WHERE BOAT_ID=";
+    private static String queryInsertBoat =
+            "INSERT INTO BOATS (NAME) VALUES (" +
+                    "'${name}'               )";
     private static String queryUpdateBoat =
+            "UPDATE BOATS SET            " +
+                    "NAME='${name}'      " +
+                    "WHERE Boat_ID=${id} ";
+    /*private static String queryUpdateBoat =
             "UPDATE BOATS SET " +
                     "NAME='${name}', " +
                     "SKIPPER='${skipper}', " +
@@ -326,6 +256,6 @@ public class DBBoat
                     "INSHORE_TRIPLE_L=${inshore_triple_l}, " +
                     "INSHORE_TRIPLE_M=${inshore_triple_m}, " +
                     "INSHORE_TRIPLE_H=${inshore_triple_h} " +
-                    "WHERE BOAT_ID=${boat_id}";
+                    "WHERE BOAT_ID=${boat_id}";*/
 
 }

@@ -1,7 +1,6 @@
 package com.windhound.server.database;
 
 import com.windhound.server.race.Event;
-import oracle.sql.TIMESTAMP;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 import javax.swing.*;
@@ -13,6 +12,13 @@ import java.util.*;
 
 import static com.windhound.server.database.DBManager.executeLoadQuery;
 import static com.windhound.server.database.DBManager.getValueAt;
+import static com.windhound.server.database.DBAdmin.loadAdminsByEventTypeAndID;
+import static com.windhound.server.database.DBAdmin.addEventAdmins;
+import static com.windhound.server.database.DBAdmin.deleteAllEventAdmins;
+import static com.windhound.server.database.DBRelation.addEventRaceRelations;
+import static com.windhound.server.database.DBRelation.deleteAllEventRaceRelations;
+import static com.windhound.server.database.DBRelation.addEventChampionshipRelations;
+import static com.windhound.server.database.DBRelation.deleteAllEventChampionshipRelations;
 
 public class DBEvent
 {
@@ -61,9 +67,6 @@ public class DBEvent
         Long eventID = null;
 
         Map<String, String> valuesMap = new HashMap<>();
-        Map<String, String> adminMap = new HashMap<>();
-        Map<String, String> raceMap = new HashMap<>();
-        Map<String, String> championshipMap = new HashMap<>();
 
         DateFormat dateFormat  = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
         String startDateString = dateFormat.format(event.getStartDate().getTime());
@@ -73,6 +76,7 @@ public class DBEvent
         valuesMap.put("start_date", startDateString);
         valuesMap.put("end_date", endDateString);
 
+        // TODO move "sub" after valuesMap.put(id)
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
         //UPDATE
@@ -84,9 +88,9 @@ public class DBEvent
 
             eventID = event.getID();
 
-            deleteEventAdmins(connection, eventID);
-            deleteEventRaces(connection, eventID);
-            deleteEventChampionships(connection, eventID);
+            deleteAllEventAdmins(connection, eventID);
+            deleteAllEventChampionshipRelations(connection, eventID);
+            deleteAllEventRaceRelations(connection, eventID);
         }
         //INSERT
         else
@@ -100,44 +104,16 @@ public class DBEvent
         }
 
         //Save admins
-        List<Long> admins = event.getAdmins();
-        adminMap.put("stage_id", eventID.toString());
-
-        for (Long admin : admins)
-        {
-            adminMap.put("user_id", admin.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryInsertEventAdmins);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-        }
-
-        //Save races
-        List<Long> races = event.getAdmins();
-        adminMap.put("event_id", eventID.toString());
-
-        for (Long race : races)
-        {
-            adminMap.put("race_id", race.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryInsertEventRaces);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-        }
+        Long[] adminIDs = event.getAdmins().toArray(new Long[0]);
+        addEventAdmins(connection, eventID, adminIDs);
 
         //Save championships
-        List<Long> champs = event.getAdmins();
-        adminMap.put("event_id", eventID.toString());
+        Long[] championshipIDs = event.getManagers().toArray(new Long[0]);
+        addEventChampionshipRelations(connection, eventID, championshipIDs);
 
-        for (Long champ : champs)
-        {
-            adminMap.put("championship_id", champ.toString());
-            StrSubstitutor adminSub = new StrSubstitutor(adminMap);
-            String finalAdminQuery = adminSub.replace(queryInsertEventChampionships);
-
-            DBManager.executeSetQuery(connection, finalAdminQuery);
-        }
-
+        //Save races
+        Long[] raceIDs = event.getSubordinates().toArray(new Long[0]);
+        addEventRaceRelations(connection, eventID, raceIDs);
 
         return eventID;
     }
@@ -147,26 +123,9 @@ public class DBEvent
         String query = queryDeleteEventByID + eventID.toString();
         DBManager.executeSetQuery(connection, query);
 
-        deleteEventAdmins(connection, eventID);
-        deleteEventChampionships(connection, eventID);
-        deleteEventRaces(connection, eventID);
-    }
-
-    public static HashSet<Long> loadAdminsByEventTypeAndID(Connection connection, String stageType, Long stageID)
-    {
-        JTable table = DBManager.executeLoadQuery(connection, queryAdminsByStageType + "'" + stageType + "'"
-                + " AND STAGE_ID=" + stageID);
-
-
-        HashSet<Long> admins = new HashSet<>();
-
-        for (int i = 0; i < table.getRowCount(); ++i)
-        {
-            Long id = ((BigDecimal) DBManager.getValueAt(table, i, "USER_ID")).longValue();
-            admins.add(id);
-        }
-
-        return admins;
+        deleteAllEventAdmins(connection, eventID);
+        deleteAllEventChampionshipRelations(connection, eventID);
+        deleteAllEventRaceRelations(connection, eventID);
     }
 
     private static HashSet<Long> loadChampionshipsByEventID(Connection connection, Long eventID)
@@ -199,83 +158,28 @@ public class DBEvent
         return races;
     }
 
-    private static void deleteEventAdmins(Connection connection, Long eventID)
-    {
-        Map<String, String> eventMap = new HashMap<>();
-
-        eventMap.put("event_id", eventID.toString());
-        StrSubstitutor eventSub = new StrSubstitutor(eventMap);
-        String finalEventQuery = eventSub.replace(queryDeleteEventAdminRelation);
-
-        DBManager.executeSetQuery(connection, finalEventQuery);
-    }
-
-    private static void deleteEventRaces(Connection connection, Long eventID)
-    {
-        Map<String, String> eventMap = new HashMap<>();
-
-        eventMap.put("event_id", eventID.toString());
-        StrSubstitutor eventSub = new StrSubstitutor(eventMap);
-        String finalEventQuery = eventSub.replace(queryDeleteEventRaceRelation);
-
-        DBManager.executeSetQuery(connection, finalEventQuery);
-    }
-
-    private static void deleteEventChampionships(Connection connection, Long eventID)
-    {
-        Map<String, String> eventMap = new HashMap<>();
-
-        eventMap.put("event_id", eventID.toString());
-        StrSubstitutor eventSub = new StrSubstitutor(eventMap);
-        String finalEventQuery = eventSub.replace(queryDeleteEventChampionshipRelation);
-
-        DBManager.executeSetQuery(connection, finalEventQuery);
-    }
-
     //
     // Query strings
     //
     private static String queryEventByID =
             "select * from EVENT where EVENT_ID=";
-    private static String queryAdminsByStageType =
-            "select * from ADMINS where STAGE_TYPE=";
     private static String queryRelationRacesByEvent =
             "select * from REL_EVENT_RACE where EVENT_ID=";
     private static String queryRelationChampionshipsByEvent =
             "select * from REL_CHAMPIONSHIP_EVENT where EVENT_ID=";
-
     private static String queryInsertEvent =
-            "INSERT INTO EVENT (NAME, START_TIME, END_TIME) VALUES (" +
-                    "'${name}'," +
-                    "START_TIME=TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF')," +
-                    "END_TIME=TO_TIMESTAMP('${end_date}', 'YYYY-MM-DD HH24:MI:SS.FF'))";
+            "INSERT INTO EVENT (NAME, START_TIME, END_TIME) VALUES            (" +
+                    "'${name}'                                                ," +
+                    "TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF')," +
+                    "TO_TIMESTAMP('${end_date}', 'YYYY-MM-DD HH24:MI:SS.FF'))  ";
     private static String queryUpdateEvent =
             "UPDATE EVENT SET                                               " +
-                    "NAME='${name}',                                                       " +
-                    "START_TIME=TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF'), " +
-                    "END_TIME=TO_TIMESTAMP('${end_date}'  , 'YYYY-MM-DD HH24:MI:SS.FF')    " +
-                    "WHERE EVENT_ID=${id}";
+                    "NAME='${name}',                                                      " +
+                    "START_TIME=TO_TIMESTAMP('${start_date}', 'YYYY-MM-DD HH24:MI:SS.FF')," +
+                    "END_TIME=TO_TIMESTAMP('${end_date}', 'YYYY-MM-DD HH24:MI:SS.FF')     " +
+                    "WHERE EVENT_ID=${id}                                                 ";
     private static String queryLatestEventByName =
             "SELECT (EVENT_ID) FROM EVENT WHERE NAME='${name}' ORDER BY EVENT_ID DESC";
-    private static String queryInsertEventAdmins =
-            "INSERT INTO ADMINS (USER_ID, STAGE_TYPE, STAGE_ID) VALUES (" +
-                    "'${user_id}'                                              ," +
-                    "'Event'                                            ," +
-                    "'${stage_id}'                                             )";
-    private static String queryInsertEventRaces =
-            "INSERT INTO REL_EVENT_RACE (EVENT_ID, RACE_ID) VALUES (" +
-                    "'${event_id}'," +
-                    "'${race_id}')";
-    private static String queryInsertEventChampionships =
-            "INSERT INTO REL_CHAMPIONSHIP_EVENT (EVENT_ID, CHAMPIONSHIP_ID) VALUES (" +
-                    "'${event_id}'," +
-                    "'${championship_id}')";
-    private static String queryDeleteEventAdminRelation =
-            "DELETE FROM ADMINS WHERE STAGE_ID={event_id} AND STAGE_TYPE='Event'";
-    private static String queryDeleteEventRaceRelation =
-            "DELETE FROM REL_EVENT_RACE WHERE EVENT_ID=${event_id}";
-    private static String queryDeleteEventChampionshipRelation =
-            "DELETE FROM REL_CHAMPIONSHIP_EVENT WHERE EVENT_ID=${event_id}";
     private static String queryDeleteEventByID =
             "DELETE FROM EVENT WHERE EVENT_ID=";
 }

@@ -1,11 +1,26 @@
 package com.windhound.server.race;
 
 public class BoatInfo {
-    private Long sailNo, displacement, length, beam, draft, gph, offshoreToD, offshoreToT, offshoreTnoL, offshoreTnoM,
-            offshoreTnoH, inshoreToD, inshoreToT, inshoreTnoL, inshoreTnoM, inshoreTnoH;
-    private String skipper, boatClass, type;
+    private Long sailNo;
+    private Long displacement;
+    private Long length;
+    private Long beam;
+    private Long draft;
+    private Long gph;
+    private Long offshoreToD;
+    private Long offshoreToT;
+    private Long offshoreTnoL;
+    private Long offshoreTnoM;
+    private Long offshoreTnoH;
+    private Long inshoreToD;
+    private Long inshoreToT;
+    private Long inshoreTnoL;
+    private Long inshoreTnoM;
+    private Long inshoreTnoH;
+    private String skipper;
+    private String boatClass;
+    private String type;
 
-    //All fields
     public BoatInfo(Long sailNo, Long displacement, Long length, Long beam, Long draft, Long gph, Long offshoreToD,
                     Long offshoreToT, Long offshoreTnoL, Long offshoreTnoM, Long offshoreTnoH, Long inshoreToD,
                     Long inshoreToT, Long inshoreTnoL, Long inshoreTnoM, Long inshoreTnoH, String skipper,
