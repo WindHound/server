@@ -1,4 +1,4 @@
-package com.windhound.server.database;
+/*package com.windhound.server.database;
 
 import com.windhound.server.movedata.*;
 import org.apache.commons.lang.text.StrSubstitutor;
@@ -24,15 +24,15 @@ public class DBMovedata
         map.put("latitude", String.valueOf(moveData.getGpsData().getLatitude()));
 
         //Currently selects first sensor data in list
-        map.put("acc_x", String.valueOf(moveData.getSensorDatas().get(0).accelerometerData.getX()));
-        map.put("acc_y", String.valueOf(moveData.getSensorDatas().get(0).accelerometerData.getY()));
-        map.put("acc_z", String.valueOf(moveData.getSensorDatas().get(0).accelerometerData.getZ()));
+        map.put("acc_x", String.valueOf(moveData.getSensorDataPoints().get(0).accelerometerData.getX()));
+        map.put("acc_y", String.valueOf(moveData.getSensorDataPoints().get(0).accelerometerData.getY()));
+        map.put("acc_z", String.valueOf(moveData.getSensorDataPoints().get(0).accelerometerData.getZ()));
 
-        map.put("gyro_x", String.valueOf(moveData.getSensorDatas().get(0).gyroscopeData.getX()));
-        map.put("gyro_y", String.valueOf(moveData.getSensorDatas().get(0).gyroscopeData.getY()));
-        map.put("gyro_z", String.valueOf(moveData.getSensorDatas().get(0).gyroscopeData.getZ()));
+        map.put("gyro_x", String.valueOf(moveData.getSensorDataPoints().get(0).gyroscopeData.getX()));
+        map.put("gyro_y", String.valueOf(moveData.getSensorDataPoints().get(0).gyroscopeData.getY()));
+        map.put("gyro_z", String.valueOf(moveData.getSensorDataPoints().get(0).gyroscopeData.getZ()));
 
-        map.put("compass", String.valueOf(moveData.getSensorDatas().get(0).compassData.getAngle()));
+        map.put("compass", String.valueOf(moveData.getSensorDataPoints().get(0).compassData.getAngle()));
 
 
         StrSubstitutor sub = new StrSubstitutor(map);
@@ -104,3 +104,4 @@ public class DBMovedata
 
 
 }
+*/

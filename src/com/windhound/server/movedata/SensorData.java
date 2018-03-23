@@ -2,17 +2,52 @@ package com.windhound.server.movedata;
 
 public class SensorData
 {
-    public final AccelerometerData accelerometerData;
-    public final GyroscopeData gyroscopeData;
-    public final CompassData       compassData;
+    private AccelerometerData accelerometerData;
+    private CompassData       compassData;
+    private GyroscopeData     gyroscopeData;
+
+    public SensorData()
+    {
+
+    }
 
     public SensorData(
             AccelerometerData a_acceleAccelerometerData,
-            GyroscopeData     a_gyroGyroscopeData,
-            CompassData       a_compassData)
+            CompassData       a_compassData,
+            GyroscopeData     a_gyroGyroscopeData)
     {
         accelerometerData = a_acceleAccelerometerData;
-        gyroscopeData     = a_gyroGyroscopeData;
         compassData       = a_compassData;
+        gyroscopeData     = a_gyroGyroscopeData;
+    }
+
+    public AccelerometerData getAccelerometerData()
+    {
+        return accelerometerData;
+    }
+
+    public void setAccelerometerData(AccelerometerData accelerometerData)
+    {
+        this.accelerometerData = accelerometerData;
+    }
+
+    public CompassData getCompassData()
+    {
+        return compassData;
+    }
+
+    public void setCompassData(CompassData compassData)
+    {
+        this.compassData = compassData;
+    }
+
+    public GyroscopeData getGyroscopeData()
+    {
+        return gyroscopeData;
+    }
+
+    public void setGyroscopeData(GyroscopeData gyroscopeData)
+    {
+        this.gyroscopeData = gyroscopeData;
     }
 }

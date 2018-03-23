@@ -2,14 +2,20 @@ package com.windhound.server.movedata;
 
 public class CompassData
 {
-    private final float angle;
+    private Float angle;
 
-    public CompassData(float a_angle)
+    public CompassData(Float a_angle)
     {
         angle = a_angle;
     }
 
-    public float getAngle() {
+    public Float getAngle()
+    {
         return angle;
+    }
+
+    public void setAngle(Float angle)
+    {
+        this.angle = angle;
     }
 }

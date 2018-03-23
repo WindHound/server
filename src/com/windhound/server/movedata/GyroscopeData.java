@@ -2,26 +2,44 @@ package com.windhound.server.movedata;
 
 public class GyroscopeData
 {
-    private final float x;
-    private final float y;
-    private final float z;
+    private Float dX;
+    private Float dY;
+    private Float dZ;
 
-    public GyroscopeData(float a_x, float a_y, float a_z)
+    public GyroscopeData(Float a_x, Float a_y, Float a_z)
     {
-        x = a_x;
-        y = a_y;
-        z = a_z;
+        dX = a_x;
+        dY = a_y;
+        dZ = a_z;
     }
 
-    public float getX() {
-        return x;
+    public Float getdX()
+    {
+        return dX;
     }
 
-    public float getY() {
-        return y;
+    public void setdX(Float dX)
+    {
+        this.dX = dX;
     }
 
-    public float getZ() {
-        return z;
+    public Float getdY()
+    {
+        return dY;
+    }
+
+    public void setdY(Float dY)
+    {
+        this.dY = dY;
+    }
+
+    public Float getdZ()
+    {
+        return dZ;
+    }
+
+    public void setdZ(Float dZ)
+    {
+        this.dZ = dZ;
     }
 }

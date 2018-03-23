@@ -64,7 +64,6 @@ public class DBManager
         {
             Statement stmt = connection.createStatement();
             rs = stmt.executeQuery(queryString);
-
         } catch (Exception e)
         {
             e.printStackTrace();
