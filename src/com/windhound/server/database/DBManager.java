@@ -55,7 +55,7 @@ public class DBManager
         return connection;
     }
 
-    static JTable executeLoadQuery(Connection connection, String queryString)
+    public static JTable executeLoadQuery(Connection connection, String queryString)
     {
         ResultSet rs = null;
         JTable table = null;
@@ -123,7 +123,7 @@ public class DBManager
         return new DefaultTableModel(data, columnNames);
     }
 
-    static Object getValueAt(JTable table, int rowId, String columnName)
+    public static Object getValueAt(JTable table, int rowId, String columnName)
     {
         int columnId = -1;
 
