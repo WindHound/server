@@ -1,43 +1,34 @@
 package com.windhound.server.controller;
 
+import com.windhound.server.database.DBManager;
 import com.windhound.server.movedata.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 public class MoveDataController
 {
-    HashMap<Long, HashMap<Long, List<MoveDataDTO>>> data = new HashMap<>();
-
     @CrossOrigin
     @PostMapping("/movedata/add")
-    public String addMoveData(@RequestBody MoveDataDTO dto)
+    public Long addMoveData(@RequestBody MoveDataDTO dto)
     {
         MoveData moveData = new MoveData(dto);
 
-        if (!data.containsKey(moveData.getRaceID()))
-            data.put(moveData.getRaceID(), new HashMap<>());
-        if (!data.get(moveData.getRaceID()).containsKey(moveData.getBoatID()))
-            data.get(moveData.getRaceID()).put(moveData.getBoatID(), new ArrayList<>());
+        Long moveDataID = DBManager.saveMoveData(moveData);
 
-        data.get(moveData.getRaceID()).get(moveData.getBoatID()).add(moveData.toDTO());
-
-        return "accept";
+        return moveDataID;
     }
 
     @RequestMapping("/movedata/get/{raceID}/{boatID}")
     public MoveDataDTO[] getMoveData(@PathVariable Long raceID,
                                      @PathVariable Long boatID)
     {
-        if (!data.containsKey(raceID))
-            return null;
-        if (!data.get(raceID).containsKey(boatID))
-            return  null;
+        MoveData[] moveDataPoints = DBManager.loadMoveData(raceID, boatID);
 
-        return data.get(raceID).get(boatID).toArray(new MoveDataDTO[0]);
+        MoveDataDTO[] moveDataDTOs = new MoveDataDTO[moveDataPoints.length];
+        for (int i = 0; i < moveDataPoints.length; ++i)
+            moveDataDTOs[i] = moveDataPoints[i].toDTO();
+
+        return moveDataDTOs;
     }
 /*
     @CrossOrigin

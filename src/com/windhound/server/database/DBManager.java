@@ -1,5 +1,6 @@
 package com.windhound.server.database;
 
+import com.windhound.server.movedata.MoveData;
 import com.windhound.server.race.*;
 
 import javax.swing.*;
@@ -172,6 +173,22 @@ public class DBManager
         return  saveOrUpdateStructureElement(connection, type, element);
     }
 
+    public static Long saveMoveData(MoveData moveData)
+    {
+        Connection connection = getNewConnection();
+        return saveMoveData(connection, moveData);
+    }
+
+    public static MoveData[] loadMoveData(Long raceID, Long boatID)
+    {
+        Connection connection = getNewConnection();
+        return DBMoveData.loadMoveData(connection, raceID, boatID);
+    }
+
+    //
+    // With Connection
+    //
+
     public static Long[] loadAllChampionships(Connection connection)
     {
         JTable table = executeLoadQuery(connection, queryAllChampionships);
@@ -262,6 +279,16 @@ public class DBManager
         //    return DBCompetitor.loadCompetitorByID(connection, id);
 
         throw new IllegalArgumentException("Type must be non-abstract subtype of StructureManager different from Competitor");
+    }
+
+    public static Long saveMoveData(Connection connection, MoveData moveData)
+    {
+        return DBMoveData.saveMoveData(connection, moveData);
+    }
+
+    public static MoveData[] loadMoveData(Connection connection, Long raceID, Long boatID)
+    {
+        return DBMoveData.loadMoveData(connection, raceID, boatID);
     }
 
     //

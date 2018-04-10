@@ -3,7 +3,7 @@ package com.windhound.server;
 import com.windhound.server.database.DBBoat;
 import com.windhound.server.database.DBChampionship;
 import com.windhound.server.database.DBManager;
-//import com.windhound.server.database.DBMovedata;
+//import com.windhound.server.database.DBMoveData;
 import com.windhound.server.movedata.*;
 import com.windhound.server.race.*;
 

@@ -15,14 +15,14 @@ public class StructureController
     //
     // Championships
     //
-    @RequestMapping("/structure/championship/all/")
+    @RequestMapping("/structure/championship/all")
     public Long[] getAllChampionships()
     {
         return DBManager.loadAllChampionships();
     }
 
     @CrossOrigin
-    @PostMapping("/structure/championship/add/")
+    @PostMapping("/structure/championship/add")
     public String addChampionship(@RequestParam(value = "id")             Long id,
                                   @RequestParam(value = "name")           String name,
                                   @RequestParam(value = "startDate")      Long startDateMilli,
@@ -58,14 +58,14 @@ public class StructureController
     //
     // Events
     //
-    @RequestMapping("/structure/event/all/")
+    @RequestMapping("/structure/event/all")
     public Long[] getAllEvents()
     {
         return DBManager.loadAllEvents();
     }
 
     @CrossOrigin
-    @PostMapping("/structure/event/add/")
+    @PostMapping("/structure/event/add")
     public String addEvent(@RequestParam(value = "id")             Long id,
                            @RequestParam(value = "name")           String name,
                            @RequestParam(value = "startDate")      Long startDateMilli,
@@ -103,14 +103,14 @@ public class StructureController
     //
     // Races
     //
-    @RequestMapping("/structure/race/all/")
+    @RequestMapping("/structure/race/all")
     public Long[] getAllRaces()
     {
         return DBManager.loadAllRaces();
     }
 
     @CrossOrigin
-    @PostMapping("/structure/race/add/")
+    @PostMapping("/structure/race/add")
     public String addRace(@RequestParam(value = "id")             Long id,
                           @RequestParam(value = "name")           String name,
                           @RequestParam(value = "startDate")      Long startDateMilli,
@@ -148,14 +148,14 @@ public class StructureController
     //
     // Boats
     //
-    @RequestMapping("/structure/boat/all/")
+    @RequestMapping("/structure/boat/all")
     public Long[] getAllBoats()
     {
         return DBManager.loadAllBoats();
     }
 
     @CrossOrigin
-    @PostMapping("/structure/boat/add/")
+    @PostMapping("/structure/boat/add")
     public String addBoat(@RequestParam(value = "id") Long id,
                           @RequestParam(value = "name") String name,
                           @RequestParam(value = "admins[]") List<Long> admins,
@@ -186,7 +186,7 @@ public class StructureController
     //
     /*
     @CrossOrigin
-    @PostMapping("/structure/add/competitor/")
+    @PostMapping("/structure/add/competitor")
     public String addCompetitor(@RequestParam(value = "id") Long id,
                                 @RequestParam(value = "name") String name,
                                 @RequestParam(value = "managers[]") List<Long> managers)
