@@ -1,23 +1,29 @@
 package com.windhound.server.race.course;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.windhound.server.movedata.GPSData;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.List;
 
 public class Course
 {
-    Long       id;
-    int        laps;
-    GPSData    startLine;
-    GPSData    finishLine;
-    List<Buoy> buoys;
+    private Long       id;
+    private int        laps;
+    private GPSData    startLine;
+    private GPSData    finishLine;
+    private List<Buoy> buoys;
+    //private List<GPSData> buoys;
+
+    public Course()
+    {
+
+    }
 
     public Course(Long       a_id,
                   int        a_laps,
                   GPSData    a_startLine,
                   GPSData    a_finishLine,
                   List<Buoy> a_buoys)
+                  //List<GPSData> a_buoys)
     {
         id         = a_id;
         laps       = a_laps;
@@ -28,12 +34,54 @@ public class Course
 
     public Course(String JSON)
     {
-        throw new NotImplementedException();
+        ObjectMapper mapper = new ObjectMapper();
+        Course course;
+
+        try
+        {
+            course = mapper.readValue(JSON, Course.class);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            course = null;
+            System.exit(1);
+        }
+
+        id         = course.getId();
+        laps       = course.getLaps();
+        startLine  = course.getStartLine();
+        finishLine = course.getFinishLine();
+        buoys      = course.getBuoys();
     }
 
     public String toJSON()
     {
-        throw new NotImplementedException();
+        ObjectMapper mapper = new ObjectMapper();
+        String JSON;
+
+        try
+        {
+            JSON = mapper.writeValueAsString(this);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            JSON = null;
+            System.exit(1);
+        }
+
+        return JSON;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
     }
 
     public int getLaps()
@@ -66,6 +114,7 @@ public class Course
         this.finishLine = finishLine;
     }
 
+    //*
     public List<Buoy> getBuoys()
     {
         return buoys;
@@ -75,4 +124,16 @@ public class Course
     {
         this.buoys = buoys;
     }
+    //*/
+    /*
+    public List<GPSData> getBuoys()
+    {
+        return buoys;
+    }
+
+    public void setBuoys(List<GPSData> buoys)
+    {
+        this.buoys = buoys;
+    }
+    //*/
 }

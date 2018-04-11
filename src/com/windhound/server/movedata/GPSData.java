@@ -5,6 +5,11 @@ public class GPSData
     private Float latitude;
     private Float longitude;
 
+    public GPSData()
+    {
+
+    }
+
     public GPSData(Float a_latitude, Float a_longitude)
     {
         latitude  = a_latitude;

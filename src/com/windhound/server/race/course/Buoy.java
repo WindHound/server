@@ -6,6 +6,11 @@ public class Buoy
 {
     GPSData location;
 
+    public Buoy()
+    {
+
+    }
+
     public Buoy(GPSData a_location)
     {
         location = a_location;
