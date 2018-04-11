@@ -36,7 +36,7 @@ public class DBEvent
 
         try
         {
-            DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
             startDate.setTime(dateFormat.parse(startDateString));
             endDate.setTime(dateFormat.parse(endDateString));
         }
@@ -68,7 +68,7 @@ public class DBEvent
 
         Map<String, String> valuesMap = new HashMap<>();
 
-        DateFormat dateFormat  = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
+        DateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
         String startDateString = dateFormat.format(event.getStartDate().getTime());
         String endDateString   = dateFormat.format(event.getEndDate().getTime());
 

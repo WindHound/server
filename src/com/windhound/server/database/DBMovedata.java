@@ -36,7 +36,7 @@ public class DBMoveData
 
             String timestampString   = getValueAt(table, i, "TIMESTAMP").toString();
             Calendar timestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-            DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
             try
             {
                 timestamp.setTime(dateFormat.parse(timestampString));
@@ -69,7 +69,7 @@ public class DBMoveData
         map.put("latitude",      moveData.getGpsData().getLatitude().toString());
         map.put("longitude",     moveData.getGpsData().getLongitude().toString());
 
-        DateFormat dateFormat  = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
+        DateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
         String timestamp = dateFormat.format(moveData.getTimestamp().getTime());
         map.put("timestamp", timestamp);
 
