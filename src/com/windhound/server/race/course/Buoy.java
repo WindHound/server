@@ -10,4 +10,14 @@ public class Buoy
     {
         location = a_location;
     }
+
+    public GPSData getLocation()
+    {
+        return location;
+    }
+
+    public void setLocation(GPSData location)
+    {
+        this.location = location;
+    }
 }

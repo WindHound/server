@@ -10,10 +10,10 @@ public abstract class ManageableElement<S extends StructureElement, M extends St
     protected HashSet<Long> admins;
 
     protected ManageableElement(Long          a_id,
-                             String        a_name,
-                             HashSet<Long> a_admins,
-                             HashSet<Long> a_subordinates,
-                             HashSet<Long> a_managers)
+                                String        a_name,
+                                HashSet<Long> a_admins,
+                                HashSet<Long> a_subordinates,
+                                HashSet<Long> a_managers)
     {
         super(a_id, a_name, a_subordinates, a_managers);
 
