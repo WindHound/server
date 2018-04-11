@@ -34,7 +34,7 @@ public class DBMoveData
             //Long boatID       = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
             //Long raceID       = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
 
-            String timestampString   = getValueAt(table, 0, "TIMESTAMP").toString();
+            String timestampString   = getValueAt(table, i, "TIMESTAMP").toString();
             Calendar timestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
             try
@@ -47,8 +47,8 @@ public class DBMoveData
                 System.exit(1);
             }
 
-            float longitude = ((BigDecimal)getValueAt(table, i, "LONGITUDE")).floatValue();
             float latitude  = ((BigDecimal)getValueAt(table, i, "LATITUDE")).floatValue();
+            float longitude = ((BigDecimal)getValueAt(table, i, "LONGITUDE")).floatValue();
             GPSData gpsData = new GPSData(latitude, longitude);
 
             List<SensorData> sensorDataPoints = loadSensorData(connection, moveDataID);
@@ -66,8 +66,8 @@ public class DBMoveData
         map.put("competitor_id", moveData.getCompetitorID().toString());
         map.put("boat_id",       moveData.getBoatID().toString());
         map.put("race_id",       moveData.getRaceID().toString());
-        map.put("longitude",     moveData.getGpsData().getLongitude().toString());
         map.put("latitude",      moveData.getGpsData().getLatitude().toString());
+        map.put("longitude",     moveData.getGpsData().getLongitude().toString());
 
         DateFormat dateFormat  = new SimpleDateFormat("YYYY-MM-DD kk:mm:ss.SSSSSS");
         String timestamp = dateFormat.format(moveData.getTimestamp().getTime());
@@ -139,12 +139,12 @@ public class DBMoveData
     private static String queryLoadMoveData =
             "SELECT * FROM MOVEDATA WHERE RACE_ID='${race_id}' AND BOAT_ID='${boat_id}' ORDER BY MOVEDATA_ID";
     private static String queryInsertMoveData =
-            "INSERT INTO MOVEDATA (COMPETITOR_ID, BOAT_ID, RACE_ID, LATITUDE, LONGITUDE, TIMESTAMP) VALUES (" +
+            "INSERT INTO MOVEDATA (COMPETITOR_ID, BOAT_ID, RACE_ID, LONGITUDE, LATITUDE, TIMESTAMP) VALUES (" +
                     "${competitor_id}, " +
                     "${boat_id}, " +
                     "${race_id}, " +
-                    "${longitude}, " +
                     "${latitude}, " +
+                    "${longitude}, " +
                     "TO_TIMESTAMP('${timestamp}', 'YYYY-MM-DD HH24:MI:SS.FF'))";
     private static String queryLatestMoveDataByName =
             "SELECT (MOVEDATA_ID) FROM MOVEDATA WHERE COMPETITOR_ID='${competitor_id}' AND BOAT_ID='${boat_id}' AND RACE_ID='${race_id}' ORDER BY MOVEDATA_ID DESC";
