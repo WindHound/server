@@ -1,16 +1,15 @@
 package com.windhound.server.movedata;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
+import java.time.Instant;
 
 public class MoveData
 {
-    private Long     competitorID;
-    private Long     boatID;
-    private Long     raceID;
-    private Calendar timestamp;
+    private Long    competitorID;
+    private Long    boatID;
+    private Long    raceID;
+    private Instant timestamp;
 
     private GPSData          gpsData;
     private List<SensorData> sensorDataPoints;
@@ -18,14 +17,14 @@ public class MoveData
     public MoveData(Long             a_competitorID,
                     Long             a_boatID,
                     Long             a_raceID,
-                    Calendar         a_time,
+                    Instant          a_timestamp,
                     GPSData          a_gpsData,
                     List<SensorData> a_sensorDataPoints)
     {
         competitorID     = a_competitorID;
         boatID           = a_boatID;
         raceID           = a_raceID;
-        timestamp        = a_time;
+        timestamp        = a_timestamp;
         gpsData          = a_gpsData;
         sensorDataPoints = a_sensorDataPoints;
     }
@@ -41,8 +40,7 @@ public class MoveData
         competitorID = dto.getCompetitorID();
         boatID       = dto.getBoatID();
         raceID       = dto.getRaceID();
-        timestamp    = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        timestamp.setTimeInMillis(dto.getTimeMilli());
+        timestamp    = Instant.ofEpochMilli(dto.getTimeMilli());
 
         gpsData = new GPSData(dto.getLatitude(), dto.getLongitude());
 
@@ -77,7 +75,7 @@ public class MoveData
         dto.setCompetitorID(competitorID);
         dto.setBoatID(boatID);
         dto.setRaceID(raceID);
-        dto.setTimeMilli(timestamp.getTimeInMillis());
+        dto.setTimeMilli(timestamp.toEpochMilli());
 
         dto.setLatitude(gpsData.getLatitude());
         dto.setLongitude(gpsData.getLongitude());
@@ -142,12 +140,12 @@ public class MoveData
         this.raceID = raceID;
     }
 
-    public Calendar getTimestamp()
+    public Instant getTimestamp()
     {
         return timestamp;
     }
 
-    public void setTimestamp(Calendar timestamp)
+    public void setTimestamp(Instant timestamp)
     {
         this.timestamp = timestamp;
     }

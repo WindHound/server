@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.windhound.server.database.DBManager.executeLoadQuery;
@@ -35,14 +39,15 @@ public class DBMoveData
             //Long raceID       = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
 
             String timestampString   = getValueAt(table, i, "TIMESTAMP").toString();
-            Calendar timestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            Instant timestamp;
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
             try
             {
-                timestamp.setTime(dateFormat.parse(timestampString));
+                timestamp = Instant.ofEpochMilli(dateFormat.parse(timestampString).getTime());
             }
             catch (Exception e)
             {
+                timestamp = null;
                 e.printStackTrace();
                 System.exit(1);
             }
@@ -69,8 +74,8 @@ public class DBMoveData
         map.put("latitude",      moveData.getGpsData().getLatitude().toString());
         map.put("longitude",     moveData.getGpsData().getLongitude().toString());
 
-        DateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
-        String timestamp = dateFormat.format(moveData.getTimestamp().getTime());
+        LocalDateTime datetime = LocalDateTime.ofInstant(moveData.getTimestamp(), ZoneOffset.UTC);
+        String timestamp = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.SSSSSS").format(datetime);
         map.put("timestamp", timestamp);
 
         StrSubstitutor sub = new StrSubstitutor(map);
