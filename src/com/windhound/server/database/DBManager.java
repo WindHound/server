@@ -301,5 +301,5 @@ public class DBManager
     private static String queryAllRaces =
             "select (RACE_ID) from RACE";
     private static String queryAllBoats =
-            "select (BOAT_ID) from BOATS";
+            "select (BOAT_ID) from BOAT";
 }

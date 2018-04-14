@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.windhound.server.database.DBManager.executeLoadQuery;
@@ -29,14 +33,15 @@ public class DBChampionship
         String startDateString = getValueAt(table, 0, "START_TIME").toString();
         String endDateString   = getValueAt(table, 0, "END_TIME").toString();
 
-        Calendar startDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        Calendar endDate   = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Instant startDate  = null;
+        Instant endDate    = null;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         try
         {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
-            startDate.setTime(dateFormat.parse(startDateString));
-            endDate.setTime(dateFormat.parse(endDateString));
+            startDate = Instant.ofEpochMilli(dateFormat.parse(startDateString).getTime());
+            endDate   = Instant.ofEpochMilli(dateFormat.parse(endDateString).getTime());
         }
         catch (Exception e)
         {
@@ -64,9 +69,10 @@ public class DBChampionship
 
         Map<String, String> valuesMap = new HashMap<>();
 
-        DateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
-        String startDateString = dateFormat.format(championship.getStartDate().getTime());
-        String endDateString   = dateFormat.format(championship.getEndDate().getTime());
+        LocalDateTime startDatetime = LocalDateTime.ofInstant(championship.getStartDate(), ZoneOffset.UTC);
+        LocalDateTime endDatetime   = LocalDateTime.ofInstant(championship.getEndDate(), ZoneOffset.UTC);
+        String startDateString = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").format(startDatetime);
+        String endDateString   = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").format(endDatetime);
 
         valuesMap.put("name", championship.getName());
         valuesMap.put("start_date", startDateString);

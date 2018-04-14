@@ -45,7 +45,7 @@ public class DBBoat
 
     private static String generateInsertBoatQuery(String boatName, BoatInfo boatInfo)
     {
-        String query = "INSERT INTO BOATS (NAME, SKIPPER, SAILNO, LENGTH, BEAM, DISPLACEMENT, DRAFT, CLASS, TYPE," +
+        String query = "INSERT INTO BOAT (NAME, SKIPPER, SAILNO, LENGTH, BEAM, DISPLACEMENT, DRAFT, CLASS, TYPE," +
                 " GPH, OFFSHORE_TOD, OFFSHORE_TOT, OFFSHORE_TRIPLE_L, OFFSHORE_TRIPLE_M, OFFSHORE_TRIPLE_H," +
                 "INSHORE_TOT, INSHORE_TOD, INSHORE_TRIPLE_L, INSHORE_TRIPLE_M, INSHORE_TRIPLE_H) VALUES ('" +
                 boatName + "', '" +
@@ -224,18 +224,18 @@ public class DBBoat
     private static String queryAdminsByBoat =
             "SELECT * FROM ADMINS WHERE STAGE_TYPE='Boat' AND STAGE_ID=";
     private static String queryLatestBoatByName =
-            "SELECT (BOAT_ID) FROM BOATS WHERE NAME='${name}' ORDER BY BOAT_ID DESC";
+            "SELECT (BOAT_ID) FROM BOAT WHERE NAME='${name}' ORDER BY BOAT_ID DESC";
     private static String queryDeleteBoatByID =
-            "DELETE FROM BOATS WHERE BOAT_ID=";
+            "DELETE FROM BOAT WHERE BOAT_ID=";
     private static String queryInsertBoat =
-            "INSERT INTO BOATS (NAME) VALUES (" +
+            "INSERT INTO BOAT (NAME) VALUES (" +
                     "'${name}'               )";
     private static String queryUpdateBoat =
-            "UPDATE BOATS SET            " +
-                    "NAME='${name}'      " +
-                    "WHERE Boat_ID=${id} ";
+            "UPDATE BOAT SET            " +
+                    "NAME='${name}'     " +
+                    "WHERE Boat_ID=${id}";
     /*private static String queryUpdateBoat =
-            "UPDATE BOATS SET " +
+            "UPDATE BOAT SET " +
                     "NAME='${name}', " +
                     "SKIPPER='${skipper}', " +
                     "SAILNO=${sailno}, " +

@@ -1,18 +1,19 @@
 package com.windhound.server.race;
 
-import java.util.Calendar;
-
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class Championship extends ManageableElement<Event, Championship>
 {
-    private Calendar startDate;
-    private Calendar endDate;
+    private Instant startDate;
+    private Instant endDate;
 
     public Championship(Long          a_id,
                         String        a_name,
-                        Calendar      a_startDate,
-                        Calendar      a_endDate,
+                        Instant       a_startDate,
+                        Instant       a_endDate,
                         HashSet<Long> a_admins,
                         HashSet<Long> a_events)
     {
@@ -21,31 +22,39 @@ public class Championship extends ManageableElement<Event, Championship>
         startDate = a_startDate;
         endDate   = a_endDate;
     }
-/*
-    public static Championship createChampionship(Long          a_id,
-                                                  String        a_name,
-                                                  Calendar      a_startDate,
-                                                  Calendar      a_endDate,
-                                                  HashSet<Long> a_admins,
-                                                  HashSet<Long> a_events)
-    {
-        Championship championship = StructureManager.getChampionship(a_id);
-        if (championship == null)
-        {
-            championship = new Championship(a_id, a_name, a_startDate, a_endDate, a_admins, a_events);
-            StructureManager.saveOrUpdateChampionship(championship);
-        } else
-            throw new ExceptionInInitializerError("Championship already exists");
 
-        return championship;
+    public Championship(ChampionshipDTO dto)
+    {
+        this(
+                dto.getId(),
+                dto.getName(),
+                Instant.ofEpochMilli(dto.getStartDate()),
+                Instant.ofEpochMilli(dto.getEndDate()),
+                new HashSet<Long>(Arrays.asList(dto.getAdmins())),
+                new HashSet<Long>(Arrays.asList(dto.getEvents()))
+        );
     }
-*/
-    public Calendar getStartDate()
+
+    public ChampionshipDTO toDTO()
+    {
+        ChampionshipDTO dto = new ChampionshipDTO(
+                id,
+                name,
+                startDate.toEpochMilli(),
+                endDate.toEpochMilli(),
+                admins.toArray(new Long[admins.size()]),
+                subordinates.toArray(new Long[subordinates.size()])
+        );
+
+        return dto;
+    }
+
+    public Instant getStartDate()
     {
         return startDate;
     }
 
-    public Calendar getEndDate()
+    public Instant getEndDate()
     {
         return endDate;
     }

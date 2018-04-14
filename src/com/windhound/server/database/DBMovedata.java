@@ -37,17 +37,18 @@ public class DBMoveData
             Long competitorID = ((BigDecimal)getValueAt(table, i, "COMPETITOR_ID")).longValue();
             //Long boatID       = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
             //Long raceID       = ((BigDecimal)getValueAt(table, i, "BOAT_ID")).longValue();
-
             String timestampString   = getValueAt(table, i, "TIMESTAMP").toString();
-            Instant timestamp;
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss.SSSSSS");
+
+            Instant timestamp = null;
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
             try
             {
                 timestamp = Instant.ofEpochMilli(dateFormat.parse(timestampString).getTime());
             }
             catch (Exception e)
             {
-                timestamp = null;
                 e.printStackTrace();
                 System.exit(1);
             }
@@ -75,7 +76,7 @@ public class DBMoveData
         map.put("longitude",     moveData.getGpsData().getLongitude().toString());
 
         LocalDateTime datetime = LocalDateTime.ofInstant(moveData.getTimestamp(), ZoneOffset.UTC);
-        String timestamp = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.SSSSSS").format(datetime);
+        String timestamp = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS").format(datetime);
         map.put("timestamp", timestamp);
 
         StrSubstitutor sub = new StrSubstitutor(map);
