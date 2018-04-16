@@ -1,7 +1,6 @@
 package com.windhound.server.security;
 
 import com.windhound.server.database.DBManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,30 +8,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.swing.*;
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class CustomUserDetailsService implements UserDetailsService{
 
     public UserDetails loadUserByUsername(String username) {
-        com.windhound.server.security.User user = findUserByUsername(username);
+        UserDTO userDTO = findUserByUsername(username);
         User.UserBuilder builder;
 
-        if (user != null) {
+        if (userDTO != null) {
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
-            builder.password(new BCryptPasswordEncoder().encode(user.getPassword()));
-            builder.roles(user.getRoles());
+            builder.password(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+            builder.roles(userDTO.getRoles());
         } else {
-            throw new UsernameNotFoundException("User not found.");
+            throw new UsernameNotFoundException("UserDTO not found.");
         }
 
         return builder.build();
     }
 
 
-    private com.windhound.server.security.User findUserByUsername(String user) {
+    private UserDTO findUserByUsername(String user) {
         Connection con = DBManager.getNewConnection();
 //        String getUserString = "SELECT USERNAME, PASSWORD FROM USERS WHERE USERNAME = ?";
         String getUserString = "SELECT USERNAME, PASSWORD FROM USERS WHERE USERNAME = '" + user + "'";
@@ -58,6 +54,6 @@ public class CustomUserDetailsService implements UserDetailsService{
 
         System.out.println(username + " : " + password);
 
-        return new com.windhound.server.security.User(username, password, "USER");
+        return new UserDTO(username, password, "USER");
     }
 }
