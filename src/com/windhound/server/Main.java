@@ -18,6 +18,7 @@ import com.windhound.server.race.course.Course;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class Main
@@ -39,7 +40,7 @@ public class Main
         // Set properties
         // Allows both local testing and deploy with same code
         myProps.setProperty("server.address", (String)host.orElse("localhost"));
-        myProps.setProperty("server.port", (String)port.orElse("8080"));
+        myProps.setProperty("server.port", (String)port.orElse("8443"));
 
         SpringApplication app = new SpringApplication(Main.class);
         app.setDefaultProperties(myProps);
