@@ -19,7 +19,7 @@ public class AccountController {
     //TODO: prevent duplicate accounts
 
     @CrossOrigin
-    @PostMapping("/user/add/")
+    @PostMapping("/user/add")
     public void addUser(@RequestBody UserDTO dto)
 
     {
