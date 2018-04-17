@@ -5,7 +5,6 @@ public class UserDTO {
         private String password;
         private String name;
         private String email;
-        private String telNo;
 
         //not used, only present for spring
         private String[] roles;
@@ -21,7 +20,6 @@ public class UserDTO {
 
             this.name = name;
             this.email = email;
-            this.telNo = telNo;
         }
 
     public String getUsername() {
@@ -62,13 +60,5 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getTelNo() {
-        return telNo;
-    }
-
-    public void setTelNo(String telNo) {
-        this.telNo = telNo;
     }
 }

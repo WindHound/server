@@ -1,6 +1,7 @@
 package com.windhound.server.controller;
 
 import com.windhound.server.database.DBManager;
+import com.windhound.server.security.LoginDTO;
 import com.windhound.server.security.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @RestController
@@ -24,8 +26,8 @@ public class AccountController {
 
     {
         Connection con = DBManager.getNewConnection();
-        String insertUserString = "INSERT INTO USERS (NAME, USERNAME, PASSWORD, EMAIL, TELNO, ENABLED) " +
-                "VALUES (?, ?, ?, ?, ?, 1)";
+        String insertUserString = "INSERT INTO USERS (NAME, USERNAME, PASSWORD, EMAIL, ENABLED) " +
+                "VALUES (?, ?, ?, ?, 1)";
 
         try {
             PreparedStatement insertUser = con.prepareStatement(insertUserString);
@@ -34,7 +36,6 @@ public class AccountController {
             insertUser.setString(2, dto.getUsername());
             insertUser.setString(3, passwordEncoder.encode(dto.getPassword()));
             insertUser.setString(4, dto.getEmail());
-            insertUser.setString(5, dto.getTelNo());
 
             insertUser.execute();
         } catch (SQLException e) {
@@ -71,6 +72,34 @@ public class AccountController {
 //        }
 //
 //    }
+
+
+    @CrossOrigin
+    @PostMapping("/user/login")
+    public Long checkLogin(@RequestBody LoginDTO dto) {
+        Connection con = DBManager.getNewConnection();
+        String checkLoginString = "SELECT (USER_ID) FROM USERS WHERE USERNAME=? AND PASSWORD =?";
+        Long returnID = new Long(-1);
+
+        try {
+            PreparedStatement insertUser = con.prepareStatement(checkLoginString);
+
+            insertUser.setString(1, dto.getUsername());
+            insertUser.setString(2, passwordEncoder.encode(dto.getPassword()));
+
+
+            ResultSet rs = insertUser.executeQuery();
+
+            if(rs.next()) {
+                returnID = rs.getLong("USER_ID");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return returnID;
+    }
 
     //TODO: implement getAllUsers
     @RequestMapping("/user/get/{id}")
