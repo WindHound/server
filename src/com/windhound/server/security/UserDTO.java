@@ -13,7 +13,7 @@ public class UserDTO {
 
         }
 
-        public UserDTO(String username, String password, String name, String email, String telNo, String... roles) {
+        public UserDTO(String username, String password, String name, String email, String... roles) {
             this.username = username;
             this.password = password;
             this.roles = roles;

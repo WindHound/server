@@ -51,9 +51,11 @@ public class CustomUserDetailsService implements UserDetailsService{
 
         String username = (String) DBManager.getValueAt(table, 0, "USERNAME");
         String password = (String) DBManager.getValueAt(table, 0, "PASSWORD");
+        String name = (String) DBManager.getValueAt(table, 0, "NAME");
+        String email = (String) DBManager.getValueAt(table, 0, "EMAIL");
 
         System.out.println(username + " : " + password);
 
-        return new UserDTO(username, password, "USER");
+        return new UserDTO(username, password, name, email, "USER");
     }
 }
