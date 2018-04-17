@@ -10,6 +10,10 @@ public class UserDTO {
         //not used, only present for spring
         private String[] roles;
 
+        public UserDTO() {
+
+        }
+
         public UserDTO(String username, String password, String name, String email, String telNo, String... roles) {
             this.username = username;
             this.password = password;
