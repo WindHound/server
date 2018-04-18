@@ -26,8 +26,8 @@ public class AccountController {
 
     {
         Connection con = DBManager.getNewConnection();
-        String insertUserString = "INSERT INTO USERS (NAME, USERNAME, PASSWORD, EMAIL, ENABLED) " +
-                "VALUES (?, ?, ?, ?, 1)";
+        String insertUserString = "INSERT INTO USERS (NAME, USERNAME, PASSWORD, ENABLED) " +
+                "VALUES (?, ?, ?, 1)";
 
         try {
             PreparedStatement insertUser = con.prepareStatement(insertUserString);
@@ -35,7 +35,6 @@ public class AccountController {
             insertUser.setString(1, dto.getName());
             insertUser.setString(2, dto.getUsername());
             insertUser.setString(3, passwordEncoder.encode(dto.getPassword()));
-            insertUser.setString(4, dto.getEmail());
 
             insertUser.execute();
         } catch (SQLException e) {
