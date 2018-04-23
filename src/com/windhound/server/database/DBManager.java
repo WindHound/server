@@ -1,7 +1,9 @@
 package com.windhound.server.database;
 
+import com.sun.media.sound.ModelDestination;
 import com.windhound.server.movedata.MoveData;
 import com.windhound.server.race.*;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,9 +16,11 @@ public class DBManager
 {
     private static String hostname;
     private static String sid;
-    private static String user;
+    private static String username;
     private static String password;
     private static String port;
+
+    private static BasicDataSource connectionPool;
 
     static
     {
@@ -29,25 +33,34 @@ public class DBManager
             prop.load(inputStream);
 
             hostname = prop.getProperty("hostname");
-            port = prop.getProperty("port");
-            sid = prop.getProperty("sid");
-            user = prop.getProperty("user");
+            port     = prop.getProperty("port");
+            sid      = prop.getProperty("sid");
+            username = prop.getProperty("user");
             password = prop.getProperty("password");
         } catch (IOException e)
         {
             System.out.println("Could not read from config.properties file. Make sure the file is under /resources and that it is complete.");
             System.exit(1);
         }
+
+        connectionPool = new BasicDataSource();
+
+        connectionPool.setUsername(username);
+        connectionPool.setPassword(password);
+        connectionPool.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+        connectionPool.setUrl("jdbc:oracle:thin:@" + hostname + ":" + port + ":" + sid);
+        connectionPool.setInitialSize(1);
     }
 
-    public static Connection getNewConnection()
+    private static Connection getNewConnection()
     {
         Connection connection = null;
+
         try
         {
-            connection = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@" + hostname + ":" + port + ":" + sid, user, password);
-        } catch (SQLException e)
+            connection = connectionPool.getConnection();
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             System.exit(1);
@@ -140,49 +153,145 @@ public class DBManager
     public static Long[] loadAllChampionships()
     {
         Connection connection = getNewConnection();
-        return loadAllChampionships(connection);
+        Long[] ids = loadAllChampionships(connection);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return ids;
     }
 
     public static Long[] loadAllEvents()
     {
         Connection connection = getNewConnection();
-        return loadAllEvents(connection);
+        Long[] ids = loadAllEvents(connection);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return ids;
     }
 
     public static Long[] loadAllRaces()
     {
         Connection connection = getNewConnection();
-        return loadAllRaces(connection);
+        Long[] ids = loadAllRaces(connection);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return ids;
     }
 
     public static Long[] loadAllBoats()
     {
         Connection connection = getNewConnection();
-        return loadAllBoats(connection);
+        Long[] ids = loadAllBoats(connection);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return ids;
     }
 
     public static StructureElement loadStructureElement(Class type, Long id)
     {
         Connection connection = getNewConnection();
-        return loadStructureElement(connection, type, id);
+        StructureElement structureElement = loadStructureElement(connection, type, id);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return structureElement;
     }
 
     public static Long saveOrUpdateStructureElement(Class type, StructureElement element)
     {
         Connection connection = getNewConnection();
-        return  saveOrUpdateStructureElement(connection, type, element);
+        Long id = saveOrUpdateStructureElement(connection, type, element);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return id;
     }
 
     public static Long saveMoveData(MoveData moveData)
     {
         Connection connection = getNewConnection();
-        return saveMoveData(connection, moveData);
+        Long id = saveMoveData(connection, moveData);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return id;
     }
 
     public static MoveData[] loadMoveData(Long raceID, Long boatID)
     {
         Connection connection = getNewConnection();
-        return DBMoveData.loadMoveData(connection, raceID, boatID);
+        MoveData[] moveDataPoints = DBMoveData.loadMoveData(connection, raceID, boatID);
+
+        try
+        {
+            connection.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return moveDataPoints;
     }
 
     //
