@@ -5,18 +5,14 @@ public class UserDTO {
         private String password;
         private String name;
 
-        //not used, only present for spring
-        private String[] roles;
-
         public UserDTO() {
 
         }
 
-        public UserDTO(String username, String password, String name, String... roles) {
+        public UserDTO(String username, String password, String name) {
             this.username = username;
             this.password = password;
             this.name = name;
-            this.roles = roles;
         }
 
     public String getUsername() {
@@ -33,14 +29,6 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String[] getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String[] roles) {
-        this.roles = roles;
     }
 
     public String getName() {
