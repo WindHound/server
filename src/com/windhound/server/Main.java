@@ -1,23 +1,13 @@
 package com.windhound.server;
 
-import com.windhound.server.database.DBBoat;
-import com.windhound.server.database.DBChampionship;
-import com.windhound.server.database.DBManager;
-//import com.windhound.server.database.DBMoveData;
-import com.windhound.server.movedata.*;
-import com.windhound.server.race.*;
-
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import com.windhound.server.race.course.Buoy;
-import com.windhound.server.race.course.Course;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import test.MoveDataControllerTest;
+import test.StructureControllerTest;
 
 @SpringBootApplication
 public class Main
@@ -47,6 +37,9 @@ public class Main
         appContext = app.run(args);
 
         System.out.println("\n\n\n\nMUST MAKE SURE ALL CONSTRUCTORS MAKE A DEEP COPY TO PARAMETERS(EXAMPLE 'NEW COURSE')\n\n\n\n");
+
+        //StructureControllerTest.addGetRace();
+        //MoveDataControllerTest.addGetMoveData();
     }
 
     public static void Close()
